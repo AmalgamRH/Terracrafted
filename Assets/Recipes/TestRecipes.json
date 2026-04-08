@@ -1,0 +1,68 @@
+{
+  "Recipes": [
+    {
+      "Id": "string",
+      "Shaped": false,
+      "RequiredTiles": [ "WorkBenches" ],
+      "Ingredients": [
+        { "ItemId": "Cobweb", "Amount": 4 }
+      ],
+      "Outputs": [
+        { "ItemId": "TerraCraft:SpiderSilk", "Amount": 1 }
+      ]
+    },
+    {
+      "Id": "torch",
+      "Shaped": true,
+      "RequiredTiles": [ "WorkBenches" ],
+      "Ingredients": [
+        { "X": 0, "Y": 0, "ItemId": "Gel", "Amount": 1 },
+        { "X": 0, "Y": 1, "ItemId": "TerraCraft:WoodenStick", "Amount": 1 }
+      ],
+      "Outputs": [
+        { "ItemId": "Torch", "Amount": 1 }
+      ],
+      "Replacements": []
+    },
+    {
+      "Id": "wooden_stick",
+      "Shaped": true,
+      "RequiredTiles": [ "WorkBenches" ],
+      "Ingredients": [
+        { "X": 0, "Y": 0, "RecipeGroup": "Wood", "Amount": 1 },
+        { "X": 0, "Y": 1, "RecipeGroup": "Wood", "Amount": 1 }
+      ],
+      "Outputs": [
+        { "ItemId": "TerraCraft:WoodenStick", "Amount": 1 }
+      ],
+      "Replacements": []
+    },
+    {
+      "Id": "shovel",
+      "Shaped": true,
+      "RequiredTiles": [ "WorkBenches" ],
+      "Ingredients": [
+        { "X": 0, "Y": 1, "RecipeGroup": "IronBar", "Amount": 1 },
+        { "X": 1, "Y": 0, "RecipeGroup": "IronBar", "Amount": 1 },
+        { "X": 2, "Y": 1, "RecipeGroup": "IronBar", "Amount": 1 },
+        { "X": 1, "Y": 1, "ItemId": "TerraCraft:WoodenStick", "Amount": 1 },
+        { "X": 1, "Y": 2, "ItemId": "TerraCraft:WoodenStick", "Amount": 1 }
+      ],
+      "Outputs": [
+        { "ItemId": "GravediggerShovel", "Amount": 1 }
+      ]
+    },
+    {
+      "Id": "test",
+      "Shaped": false,
+      "RequiredTiles": [ "WorkBenches" ],
+      "Ingredients": [
+        { "ItemId": "StoneBlock", "Amount": 1 },
+        { "ItemId": "IronBar", "Amount": 1 }
+      ],
+      "Outputs": [
+        { "ItemId": "IronOre", "Amount": 1 }
+      ]
+    }
+  ]
+}

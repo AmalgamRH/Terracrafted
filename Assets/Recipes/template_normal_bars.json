@@ -1,0 +1,170 @@
+{
+  "RecipeGroups": [
+    {
+      "Id": "pickaxe_template_group",
+      "Template": {
+        "Id": "{Material}_pickaxe",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}", "{Bar}", "{Bar}"],
+          ["", "TerraCraft:WoodenStick", ""],
+          ["", "TerraCraft:WoodenStick", ""]
+        ],
+        "Outputs": [
+          { "ItemId": "{PickaxeId}", "Amount": 1, "UseDurability": false }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "PickaxeId": "CopperPickaxe" },
+        { "Material": "Iron", "Bar": "IronBar", "PickaxeId": "IronPickaxe" },
+        { "Material": "Gold", "Bar": "GoldBar", "PickaxeId": "GoldPickaxe" }
+      ]
+    },
+    {
+      "Id": "axe_template_group",
+      "Template": {
+        "Id": "{Material}_axe",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["", "{Bar}", "{Bar}"],
+          ["", "TerraCraft:WoodenStick", "{Bar}"],
+          ["", "TerraCraft:WoodenStick", ""]
+        ],
+        "Outputs": [
+          { "ItemId": "{AxeId}", "Amount": 1, "UseDurability": false }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "AxeId": "CopperAxe" },
+        { "Material": "Iron", "Bar": "IronBar", "AxeId": "IronAxe" },
+        { "Material": "Gold", "Bar": "GoldBar", "AxeId": "GoldAxe" }
+      ]
+    },
+    {
+      "Id": "shortsword_template_group",
+      "Template": {
+        "Id": "{Material}_shortsword",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}"],
+          ["TerraCraft:WoodenStick"],
+          ["TerraCraft:WoodenStick"]
+        ],
+        "Outputs": [
+          { "ItemId": "{ShortswordId}", "Amount": 1, "UseDurability": false }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "ShortswordId": "CopperShortsword" },
+        { "Material": "Iron", "Bar": "IronBar", "ShortswordId": "IronShortsword" },
+        { "Material": "Gold", "Bar": "GoldBar", "ShortswordId": "GoldShortsword" }
+      ]
+    },
+    {
+      "Id": "sword_template_group",
+      "Template": {
+        "Id": "{Material}_broadsword",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}"],
+          ["{Bar}"],
+          ["TerraCraft:WoodenStick"]
+        ],
+        "Outputs": [
+          { "ItemId": "{SwordId}", "Amount": 1, "UseDurability": false }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "SwordId": "CopperBroadsword" },
+        { "Material": "Iron", "Bar": "IronBar", "SwordId": "IronBroadsword" },
+        { "Material": "Gold", "Bar": "GoldBar", "SwordId": "GoldBroadsword" }
+      ]
+    },
+    {
+      "Id": "bow_template_group",
+      "Template": {
+        "Id": "{Material}_bow",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["TerraCraft:SpiderSilk", "{Bar}", ""],
+          ["TerraCraft:SpiderSilk", "", "{Bar}"],
+          ["TerraCraft:SpiderSilk", "{Bar}", ""]
+        ],
+        "Outputs": [
+          { "ItemId": "{BowId}", "Amount": 1, "UseDurability": false }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "BowId": "CopperBow" },
+        { "Material": "Iron", "Bar": "IronBar", "BowId": "IronBow" },
+        { "Material": "Gold", "Bar": "GoldBar", "BowId": "GoldBow" }
+      ]
+    },
+    {
+      "Id": "helmet_template_group",
+      "Template": {
+        "Id": "{Material}_helmet",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}", "{Bar}", "{Bar}"],
+          ["{Bar}", "", "{Bar}"]
+        ],
+        "Outputs": [
+          { "ItemId": "{HelmetId}", "Amount": 1 }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "HelmetId": "CopperHelmet" },
+        { "Material": "Iron", "Bar": "IronBar", "HelmetId": "IronHelmet" },
+        { "Material": "Gold", "Bar": "GoldBar", "HelmetId": "GoldHelmet" }
+      ]
+    },
+    {
+      "Id": "chestplate_template_group",
+      "Template": {
+        "Id": "{Material}_chestplate",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}", "", "{Bar}"],
+          ["{Bar}", "{Bar}", "{Bar}"],
+          ["{Bar}", "{Bar}", "{Bar}"]
+        ],
+        "Outputs": [
+          { "ItemId": "{ChestplateId}", "Amount": 1 }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "ChestplateId": "CopperChainmail" },
+        { "Material": "Iron", "Bar": "IronBar", "ChestplateId": "IronChainmail" },
+        { "Material": "Gold", "Bar": "GoldBar", "ChestplateId": "GoldChainmail" }
+      ]
+    },
+    {
+      "Id": "leggings_template_group",
+      "Template": {
+        "Id": "{Material}_leggings",
+        "Shaped": true,
+        "RequiredTiles": [ "Anvils" ],
+        "Pattern": [
+          ["{Bar}", "", "{Bar}"],
+          ["{Bar}", "", "{Bar}"]
+        ],
+        "Outputs": [
+          { "ItemId": "{LeggingsId}", "Amount": 1 }
+        ]
+      },
+      "Variants": [
+        { "Material": "Copper", "Bar": "CopperBar", "LeggingsId": "CopperGreaves" },
+        { "Material": "Iron", "Bar": "IronBar", "LeggingsId": "IronGreaves" },
+        { "Material": "Gold", "Bar": "GoldBar", "LeggingsId": "GoldGreaves" }
+      ]
+    }
+  ]
+}

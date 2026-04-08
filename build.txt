@@ -1,0 +1,3 @@
+displayName = TerraCraft
+author = Amalgam
+version = 0.1
