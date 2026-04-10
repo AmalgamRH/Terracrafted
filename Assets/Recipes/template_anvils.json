@@ -1,0 +1,59 @@
+﻿{
+    "RecipeGroups": [
+        {
+            "Id": "anvil_template_group",
+            "MaterialSource": "all_anvil_bars",
+            "Template": {
+                "Id": "{Material}_anvil",
+                "Shaped": true,
+                "RequiredTiles": ["{CraftStation}"],
+                "Pattern": [
+                    ["{Bar}","{Bar}","{Bar}"],
+                    ["","{Bar}",""],
+                    ["{Bar}","{Bar}","{Bar}"]
+                ],
+                "Outputs": [
+                    {"ItemId": "{AnvilId}"}
+                ]
+            },
+            "PlaceholderMappings": {
+                "Material": "Name",
+                "Bar": "Bar",
+                "AnvilId": "AnvilId",
+                "CraftStation": "CraftStationId"
+            }
+        }
+    ],
+    "MaterialDefinitions": [
+        {
+            "Id": "all_anvil_bars",
+            "Description": "All anvil bars",
+            "Materials": [
+                {
+                    "Name": "Iron",
+                    "Bar": "IronBar",
+                    "AnvilId": "IronAnvil",
+                    "CraftStationId": ""
+                },
+                {
+                    "Name": "Lead",
+                    "Bar": "LeadBar",
+                    "AnvilId": "LeadAnvil",
+                    "CraftStationId": ""
+                },
+                {
+                    "Name": "Mythril",
+                    "Bar": "MythrilBar",
+                    "AnvilId": "MythrilAnvil",
+                    "CraftStationId": "Anvils"
+                },
+                {
+                    "Name": "Orichalcum",
+                    "Bar": "OrichalcumBar",
+                    "AnvilId": "OrichalcumAnvil",
+                    "CraftStationId": "Anvils"
+                }
+            ]
+        }
+    ]
+}

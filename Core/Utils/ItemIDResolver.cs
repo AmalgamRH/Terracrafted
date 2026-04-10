@@ -15,33 +15,44 @@ namespace TerraCraft.Core.Utils
         /// </summary>
         /// <param name="idString"></param>
         /// <returns></returns>
+        /// <exception cref="Exception">Thrown when the item ID string cannot be resolved.</exception>
         public static int ParseItemType(string idString)
         {
-            // 如果输入是纯数字，直接解析为ID
+            // If input is a pure number, parse directly as ID
             if (int.TryParse(idString, out int id))
                 return id;
 
-            // 检查是否包含命名空间分隔符
+            // Check if it contains a namespace separator
             if (idString.Contains(':'))
             {
                 var parts = idString.Split(':');
+                if (parts.Length != 2)
+                    throw new Exception($"Invalid item ID format: '{idString}'. Expected format '[ModName]:[ItemName]' or '[id]'.");
+
                 string modName = parts[0];
                 string itemName = parts[1];
 
-                if (modName == "Terraria") //原版命名空间
+                if (modName == "Terraria") // Vanilla namespace
                 {
-                    if (int.TryParse(itemName, out int terrariaId))  //先尝试数字
+                    if (int.TryParse(itemName, out int terrariaId))
                         return terrariaId;
-                    return ResolveVanillaItemByName(itemName); //非数字按照名字
+
+                    return ResolveVanillaItemByName(itemName);
                 }
 
-                Mod mod = ModLoader.GetMod(modName); //其他模组
-                if (mod != null)
-                    return mod.Find<ModItem>(itemName)?.Type ?? 0;
-                return 0;
+                // Other mods
+                Mod mod = ModLoader.GetMod(modName);
+                if (mod == null)
+                    throw new Exception($"Mod '{modName}' is not loaded. Item ID string: '{idString}'.");
+
+                int? type = mod.Find<ModItem>(itemName)?.Type;
+                if (type == null || type == 0)
+                    throw new Exception($"Item '{itemName}' not found in mod '{modName}'. Item ID string: '{idString}'.");
+
+                return type.Value;
             }
 
-            // 如果是无命名空间的字符串，尝试按原版物品名解析
+            // No namespace: treat as vanilla item name
             return ResolveVanillaItemByName(idString);
         }
 
@@ -49,7 +60,7 @@ namespace TerraCraft.Core.Utils
         {
             FieldInfo field = typeof(ItemID).GetField(name, BindingFlags.Public | BindingFlags.Static);
             if (field == null)
-                return 0;
+                throw new Exception($"Vanilla item '{name}' does not exist in ItemID.");
 
             object value = field.GetValue(null);
             if (value is short shortValue)
@@ -57,7 +68,14 @@ namespace TerraCraft.Core.Utils
             if (value is int intValue)
                 return intValue;
 
-            return Convert.ToInt32(value);
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to convert vanilla item field '{name}' to int. Value type: {value?.GetType().Name}.", ex);
+            }
         }
     }
 }

@@ -9,11 +9,17 @@ namespace TerraCraft.Core.Systems.GridCrafting
         /// </summary>
         public static (int width, int height) GetGridSize(int tileType)
         {
-            if (tileType == TileID.WorkBenches)
-                return (3, 3);
-            if (tileType == TileID.Anvils)
-                return (3, 3);
-            return (3, 3);
+            switch (tileType)
+            {
+                case TileID.WorkBenches:
+                case TileID.Anvils: 
+                    return (3, 3);
+                case TileID.HeavyWorkBench:
+                    return (5, 3);
+                case TileID.MythrilAnvil:
+                    return (5, 5);
+            }
+            return (2, 2);
         }
     }
 }

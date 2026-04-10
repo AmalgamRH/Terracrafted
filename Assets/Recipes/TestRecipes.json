@@ -3,7 +3,7 @@
     {
       "Id": "string",
       "Shaped": false,
-      "RequiredTiles": [ "WorkBenches" ],
+      "RequiredTiles": [],
       "Ingredients": [
         { "ItemId": "Cobweb", "Amount": 4 }
       ],
@@ -14,7 +14,7 @@
     {
       "Id": "torch",
       "Shaped": true,
-      "RequiredTiles": [ "WorkBenches" ],
+      "RequiredTiles": [],
       "Ingredients": [
         { "X": 0, "Y": 0, "ItemId": "Gel", "Amount": 1 },
         { "X": 0, "Y": 1, "ItemId": "TerraCraft:WoodenStick", "Amount": 1 }
@@ -27,7 +27,7 @@
     {
       "Id": "wooden_stick",
       "Shaped": true,
-      "RequiredTiles": [ "WorkBenches" ],
+      "RequiredTiles": [],
       "Ingredients": [
         { "X": 0, "Y": 0, "RecipeGroup": "Wood", "Amount": 1 },
         { "X": 0, "Y": 1, "RecipeGroup": "Wood", "Amount": 1 }
@@ -40,7 +40,7 @@
     {
       "Id": "shovel",
       "Shaped": true,
-      "RequiredTiles": [ "WorkBenches" ],
+      "RequiredTiles": [ "Anvils" ],
       "Ingredients": [
         { "X": 0, "Y": 1, "RecipeGroup": "IronBar", "Amount": 1 },
         { "X": 1, "Y": 0, "RecipeGroup": "IronBar", "Amount": 1 },
@@ -53,16 +53,17 @@
       ]
     },
     {
-      "Id": "test",
+      "Id": "candle",
       "Shaped": false,
       "RequiredTiles": [ "WorkBenches" ],
       "Ingredients": [
-        { "ItemId": "StoneBlock", "Amount": 1 },
-        { "ItemId": "IronBar", "Amount": 1 }
+        {"ItemId": "Gel", "Amount": 1 },
+        {"ItemId": "Wood", "Amount": 1 }
       ],
       "Outputs": [
-        { "ItemId": "IronOre", "Amount": 1 }
-      ]
+        { "ItemId": "Candle", "Amount": 1 }
+      ],
+      "Replacements": []
     }
   ]
 }

@@ -1,9 +1,7 @@
 using System;
-using System.Numerics;
 using System.Reflection;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace TerraCraft.Core.Utils
 {
@@ -17,33 +15,44 @@ namespace TerraCraft.Core.Utils
         /// </summary>
         /// <param name="idString"></param>
         /// <returns></returns>
+        /// <exception cref="Exception">Thrown when the tile ID string cannot be resolved.</exception>
         public static int ParseTileType(string idString)
         {
-            // 如果输入是纯数字，直接解析为ID
+            // If input is a pure number, parse directly as ID
             if (int.TryParse(idString, out int id))
                 return id;
 
-            // 检查是否包含命名空间分隔符
+            // Check if it contains a namespace separator
             if (idString.Contains(':'))
             {
                 var parts = idString.Split(':');
+                if (parts.Length != 2)
+                    throw new Exception($"Invalid tile ID format: '{idString}'. Expected format '[ModName]:[TileName]' or '[id]'.");
+
                 string modName = parts[0];
                 string tileName = parts[1];
 
-                if (modName == "Terraria") //原版命名空间
+                if (modName == "Terraria") // Vanilla namespace
                 {
-                    if (int.TryParse(tileName, out int terrariaId))  //先尝试数字
+                    if (int.TryParse(tileName, out int terrariaId))
                         return terrariaId;
-                    return ResolveVanillaTileByName(tileName); //非数字按照名字
+
+                    return ResolveVanillaTileByName(tileName);
                 }
 
-                Mod mod = ModLoader.GetMod(modName); //其他模组
-                if (mod != null)
-                    return mod.Find<ModTile>(tileName)?.Type ?? 0;
-                return 0;
+                // Other mods
+                Mod mod = ModLoader.GetMod(modName);
+                if (mod == null)
+                    throw new Exception($"Mod '{modName}' is not loaded. Tile ID string: '{idString}'.");
+
+                int? type = mod.Find<ModTile>(tileName)?.Type;
+                if (type == null || type == 0)
+                    throw new Exception($"Tile '{tileName}' not found in mod '{modName}'. Tile ID string: '{idString}'.");
+
+                return type.Value;
             }
 
-            // 如果是无命名空间的字符串，尝试按原版方块名解析
+            // No namespace: treat as vanilla tile name
             return ResolveVanillaTileByName(idString);
         }
 
@@ -51,7 +60,7 @@ namespace TerraCraft.Core.Utils
         {
             FieldInfo field = typeof(TileID).GetField(name, BindingFlags.Public | BindingFlags.Static);
             if (field == null)
-                return 0;
+                throw new Exception($"Vanilla tile '{name}' does not exist in TileID.");
 
             object value = field.GetValue(null);
             if (value is ushort ushortValue)
@@ -61,7 +70,14 @@ namespace TerraCraft.Core.Utils
             if (value is int intValue)
                 return intValue;
 
-            return Convert.ToInt32(value);
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to convert vanilla tile field '{name}' to int. Value type: {value?.GetType().Name}.", ex);
+            }
         }
     }
 }

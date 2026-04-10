@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System;
 using TerraCraft.Core.DataStructures.GridCrafting;
+using Terraria.ID;
 
 namespace TerraCraft.Core.Loaders
 {
@@ -16,109 +17,12 @@ namespace TerraCraft.Core.Loaders
         public static string FilePath = Path.Combine(Path.GetDirectoryName(ModLoader.ModPath), "TerraCraft", "Recipes");
         public static RecipeDatabase RecipeDB { get; private set; }
 
-        #region DTO ç±»ï¼ˆä»…ç”¨äºååºåˆ—åŒ–ï¼‰
-        private class IngredientDTO
-        {
-            public int? X { get; set; }
-            public int? Y { get; set; }
-            public string ItemId { get; set; }
-            public string RecipeGroup { get; set; }
-            public int Amount { get; set; } = 1;
-        }
-
-        private class OutputDTO
-        {
-            public string ItemId { get; set; }
-            public int Amount { get; set; } = 1;
-            public bool UseDurability { get; set; } = false;
-            public int? MaxDurability { get; set; }
-            public int? InitialDurability { get; set; }
-        }
-
-        private class ReplacementDTO
-        {
-            public int? X { get; set; }
-            public int? Y { get; set; }
-            public string OriginalItemId { get; set; }
-            public string ReplaceWith { get; set; }
-            public int ReplaceAmount { get; set; } = 1;
-        }
-
-        // è¡¨ç¤º Pattern å•å…ƒæ ¼çš„ DTOï¼ˆå¯ä»¥æ˜¯ string æˆ–å¯¹è±¡ï¼‰
-        [JsonConverter(typeof(PatternCellConverter))]
-        private class PatternCellDTO
-        {
-            public string ItemId { get; set; }
-            public string RecipeGroup { get; set; }
-            public int? Amount { get; set; }  // å¯é€‰ï¼Œé»˜è®¤ 1
-        }
-        private class PatternCellConverter : JsonConverter<PatternCellDTO>
-        {
-            public override PatternCellDTO ReadJson(JsonReader reader, Type objectType, PatternCellDTO existingValue, bool hasExistingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.String)
-                {
-                    string value = reader.Value.ToString();
-                    if (string.IsNullOrEmpty(value))
-                        return null;
-                    return new PatternCellDTO { ItemId = value };
-                }
-                else if (reader.TokenType == JsonToken.StartObject)
-                {
-                    return serializer.Deserialize<PatternCellDTO>(reader);
-                }
-                return null;
-            }
-
-            public override void WriteJson(JsonWriter writer, PatternCellDTO value, JsonSerializer serializer)
-            {
-                serializer.Serialize(writer, value);
-            }
-        }
-
-        // ä¿®æ”¹ GriddedRecipeDTOï¼Œå¢åŠ  Pattern å­—æ®µï¼ŒåºŸå¼ƒåŸæœ‰çš„ Ingredientsï¼ˆä½†ä»ä¿ç•™ä»¥å…¼å®¹æ— åºé…æ–¹ï¼‰
-        private class GriddedRecipeDTO
-        {
-            public string Id { get; set; }
-            public bool Shaped { get; set; } = true;
-            public List<string> RequiredTiles { get; set; } = new List<string>();
-            public List<List<PatternCellDTO>> Pattern { get; set; }  // æ–°å¢ï¼šäºŒç»´ç½‘æ ¼
-            public List<IngredientDTO> Ingredients { get; set; }     // ä¿ç•™ç”¨äºæ— åºé…æ–¹
-            public List<OutputDTO> Outputs { get; set; }
-            public List<ReplacementDTO> Replacements { get; set; } = new List<ReplacementDTO>();
-        }
-
-        private class TemplateDTO
-        {
-            public string Id { get; set; }
-            public bool Shaped { get; set; } = true;
-            public List<string> RequiredTiles { get; set; } = new List<string>();
-            public List<List<PatternCellDTO>> Pattern { get; set; }
-            public List<IngredientDTO> Ingredients { get; set; }
-            public List<OutputDTO> Outputs { get; set; }
-            public List<ReplacementDTO> Replacements { get; set; } = new List<ReplacementDTO>();
-        }
-
-        private class TemplateGroupDTO
-        {
-            public string Id { get; set; }
-            public TemplateDTO Template { get; set; }
-            public List<Dictionary<string, string>> Variants { get; set; }
-        }
-
-        private class RecipeDatabaseDTO
-        {
-            public List<GriddedRecipeDTO> Recipes { get; set; }
-            public List<TemplateGroupDTO> RecipeGroups { get; set; }
-        }
-        #endregion
-
-        // ç­‰å¾…å…¶ä»–æ¨¡ç»„ç‰©å“idå…¨éƒ¨åŠ è½½å
+        // ÔÚPostAddRecipes()¼ÓÔØ£¬µÈ´ıÆäËûÄ£×éÎïÆ·idÈ«²¿¼ÓÔØÍê±Ï
         public override void PostAddRecipes()
         {
             var allRecipes = new List<GriddedRecipe>();
 
-            // åŠ è½½å†…åµŒèµ„æº
+            // ¼ÓÔØÇ¶ÈëÊ½×ÊÔ´
             foreach (string assetPath in Mod.GetFileNames()
                          .Where(p => p.StartsWith(AssetPath) && p.EndsWith(".json")))
             {
@@ -126,16 +30,16 @@ namespace TerraCraft.Core.Loaders
                 {
                     using Stream stream = Mod.GetFileStream(assetPath);
                     using StreamReader reader = new StreamReader(stream);
-                    var dbDTO = JsonConvert.DeserializeObject<RecipeDatabaseDTO>(reader.ReadToEnd());
-                    ProcessRecipeDatabase(dbDTO, allRecipes);
+                    string jsonContent = reader.ReadToEnd();
+                    ProcessJsonContent(jsonContent, assetPath, allRecipes);
                 }
                 catch (Exception e)
                 {
-                    Mod.Logger.Warn($"[TerraCraft] åŠ è½½å†…åµŒé…æ–¹å¤±è´¥: {assetPath}\n{e.Message}");
+                    Mod.Logger.Warn($"[TerraCraft] ¼ÓÔØÇ¶ÈëÊ½Åä·½Ê§°Ü: {assetPath}\n{e.Message}");
                 }
             }
 
-            // åŠ è½½å¤–éƒ¨ç›®å½•
+            // ¼ÓÔØÍâ²¿Ä¿Â¼
             if (Directory.Exists(FilePath))
             {
                 foreach (string filePath in Directory.GetFiles(FilePath, "*.json", SearchOption.AllDirectories))
@@ -143,24 +47,54 @@ namespace TerraCraft.Core.Loaders
                     try
                     {
                         string json = File.ReadAllText(filePath);
-                        var dbDTO = JsonConvert.DeserializeObject<RecipeDatabaseDTO>(json);
-                        ProcessRecipeDatabase(dbDTO, allRecipes);
+                        ProcessJsonContent(json, filePath, allRecipes);
                     }
                     catch (Exception e)
                     {
-                        Mod.Logger.Warn($"[TerraCraft] åŠ è½½å¤–éƒ¨é…æ–¹å¤±è´¥: {filePath}\n{e.Message}");
+                        Mod.Logger.Warn($"[TerraCraft] ¼ÓÔØÍâ²¿Åä·½Ê§°Ü: {filePath}\n{e.Message}");
                     }
                 }
             }
 
             RecipeDB = new RecipeDatabase { Recipes = allRecipes };
+            // ³õÊ¼»¯»º´æ
+            RecipeDB.InitializeCache();
+        }
+
+        // ´¦ÀíJSONÄÚÈİ£¬×Ô¶¯¼ì²â¸ñÊ½
+        private void ProcessJsonContent(string jsonContent, string sourcePath, List<GriddedRecipe> allRecipes)
+        {
+            try // ³¢ÊÔ½âÎöÎªĞÂ¸ñÊ½
+            {
+                var dbDTO = JsonConvert.DeserializeObject<RecipeDatabaseDTO>(jsonContent);
+                if (dbDTO != null)
+                {
+                    ProcessRecipeDatabase(dbDTO, allRecipes);
+                    return;
+                }
+            }
+            catch { } // ĞÂ¸ñÊ½½âÎöÊ§°Ü£¬³¢ÊÔ¾É¸ñÊ½
+
+            try // ³¢ÊÔ½âÎöÎª¾É¸ñÊ½
+            {
+                var legacyDbDTO = JsonConvert.DeserializeObject<LegacyRecipeDatabaseDTO>(jsonContent);
+                if (legacyDbDTO != null)
+                {
+                    ProcessLegacyRecipeDatabase(legacyDbDTO, allRecipes);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Mod.Logger.Warn($"[TerraCraft] ÎŞ·¨½âÎöJSONÎÄ¼ş: {sourcePath}\n{e.Message}");
+            }
         }
 
         private void ProcessRecipeDatabase(RecipeDatabaseDTO dbDTO, List<GriddedRecipe> allRecipes)
         {
             if (dbDTO == null) return;
 
-            // å¤„ç†æ™®é€šé…æ–¹
+            // ´¦ÀíÆÕÍ¨Åä·½
             if (dbDTO.Recipes != null)
             {
                 foreach (var recipeDTO in dbDTO.Recipes)
@@ -171,19 +105,107 @@ namespace TerraCraft.Core.Loaders
                 }
             }
 
-            // å¤„ç†é…æ–¹æ¨¡æ¿ç»„
-            if (dbDTO.RecipeGroups != null)
+            // ´¦ÀíÄ£°åÅä·½£¨ĞÂ¸ñÊ½£©
+            if (dbDTO.MaterialDefinitions != null && dbDTO.RecipeGroups != null)
             {
+                // ¹¹½¨²ÄÁÏÓ³Éä
+                var materialDefs = dbDTO.MaterialDefinitions.ToDictionary(md => md.Id, md => md);
+                
                 foreach (var group in dbDTO.RecipeGroups)
                 {
-                    var generated = GenerateRecipesFromTemplate(group);
+                    if (string.IsNullOrEmpty(group.MaterialSource) || !materialDefs.ContainsKey(group.MaterialSource))
+                    {
+                        Mod.Logger.Warn($"[TerraCraft] Åä·½×é {group.Id} ÒıÓÃÁË²»´æÔÚµÄ²ÄÁÏÔ´: {group.MaterialSource}");
+                        continue;
+                    }
+
+                    var materialDef = materialDefs[group.MaterialSource];
+                    var generated = GenerateRecipesFromMaterialGroup(group, materialDef);
                     allRecipes.AddRange(generated);
                 }
             }
         }
 
-        #region æ¨¡æ¿ç”Ÿæˆé€»è¾‘
-        private List<GriddedRecipe> GenerateRecipesFromTemplate(TemplateGroupDTO group)
+        private void ProcessLegacyRecipeDatabase(LegacyRecipeDatabaseDTO dbDTO, List<GriddedRecipe> allRecipes)
+        {
+            if (dbDTO == null) return;
+
+            // ´¦ÀíÆÕÍ¨Åä·½
+            if (dbDTO.Recipes != null)
+            {
+                foreach (var recipeDTO in dbDTO.Recipes)
+                {
+                    var converted = ConvertToStruct(recipeDTO);
+                    if (converted.HasValue)
+                        allRecipes.Add(converted.Value);
+                }
+            }
+
+            // ´¦ÀíÄ£°åÅä·½£¨¾É¸ñÊ½£©
+            if (dbDTO.RecipeGroups != null)
+            {
+                foreach (var group in dbDTO.RecipeGroups)
+                {
+                    var generated = GenerateRecipesFromLegacyTemplate(group);
+                    allRecipes.AddRange(generated);
+                }
+            }
+        }
+
+        #region ĞÂ¸ñÊ½Ä£°åÉú³ÉÂß¼­
+        private List<GriddedRecipe> GenerateRecipesFromMaterialGroup(TemplateGroupDTO group, MaterialDefinitionDTO materialDef)
+        {
+            var results = new List<GriddedRecipe>();
+            if (group.Template == null || materialDef.Materials == null) return results;
+
+            foreach (var material in materialDef.Materials)
+            {
+                var replacements = BuildReplacementsFromMaterial(material, group.PlaceholderMappings);
+                var recipeDTO = CloneTemplateWithReplacements(group.Template, replacements);
+
+                // ¼ì²éÊÇ·ñÓĞ¿ÕµÄ²ú³öÎïÆ·ID
+                if (recipeDTO.Outputs != null && recipeDTO.Outputs.Any(o => string.IsNullOrWhiteSpace(o.ItemId)))
+                {
+                    // Èç¹ûÁô¿Õ£¬¾²Ä¬Ìø¹ı
+                    continue;
+                }
+
+                var converted = ConvertToStruct(recipeDTO);
+                if (converted.HasValue)
+                    results.Add(converted.Value);
+            }
+            return results;
+        }
+
+        private Dictionary<string, string> BuildReplacementsFromMaterial(Dictionary<string, string> material, Dictionary<string, string> placeholderMappings)
+        {
+            var replacements = new Dictionary<string, string>();
+            
+            if (placeholderMappings != null)
+            {
+                foreach (var mapping in placeholderMappings)
+                {
+                    string placeholder = mapping.Key;
+                    string materialProperty = mapping.Value;
+                    
+                    if (material.ContainsKey(materialProperty))
+                    {
+                        replacements[placeholder] = material[materialProperty];
+                    }
+                    else
+                    {
+                        // Èç¹ûMaterialÊôĞÔ²»´æÔÚ£¬¼ÇÂ¼¾¯¸æ
+                        Mod.Logger.Warn($"[TerraCraft] ²ÄÁÏÈ±ÉÙÊôĞÔ: {materialProperty}");
+                    }
+                }
+            }
+            
+            return replacements;
+        }
+        #endregion
+
+        #region ¾É¸ñÊ½Ä£°åÉú³ÉÂß¼­£¨Ïòºó¼æÈİ£©
+        private List<GriddedRecipe> GenerateRecipesFromLegacyTemplate(LegacyTemplateGroupDTO group)
         {
             var results = new List<GriddedRecipe>();
             if (group.Template == null || group.Variants == null) return results;
@@ -191,29 +213,35 @@ namespace TerraCraft.Core.Loaders
             foreach (var variant in group.Variants)
             {
                 var recipeDTO = CloneTemplateWithReplacements(group.Template, variant);
-                if (recipeDTO != null)
+
+                // ¼ì²éÊÇ·ñÓĞ¿ÕµÄ²ú³öÎïÆ·ID
+                if (recipeDTO.Outputs != null && recipeDTO.Outputs.Any(o => string.IsNullOrWhiteSpace(o.ItemId)))
                 {
-                    var converted = ConvertToStruct(recipeDTO);
-                    if (converted.HasValue)
-                        results.Add(converted.Value);
+                    continue;
                 }
+
+                var converted = ConvertToStruct(recipeDTO);
+                if (converted.HasValue)
+                    results.Add(converted.Value);
             }
             return results;
         }
+        #endregion
 
+        #region ¹²ÏíÄ£°åÂß¼­
         private GriddedRecipeDTO CloneTemplateWithReplacements(TemplateDTO template, Dictionary<string, string> replacements)
         {
             var dto = new GriddedRecipeDTO
             {
                 Id = ReplacePlaceholders(template.Id, replacements),
                 Shaped = template.Shaped,
-                RequiredTiles = new List<string>(template.RequiredTiles),
+                RequiredTiles = template.RequiredTiles == null ? null : new List<string>(),
                 Ingredients = new List<IngredientDTO>(),
                 Outputs = new List<OutputDTO>(),
                 Replacements = new List<ReplacementDTO>()
             };
 
-            // æ›¿æ¢åŸæ–™
+            // Ìæ»»Ô­ÁÏ
             if (template.Ingredients != null)
             {
                 foreach (var ing in template.Ingredients)
@@ -229,7 +257,7 @@ namespace TerraCraft.Core.Loaders
                 }
             }
 
-            // æ›¿æ¢äº§å‡º
+            // Ìæ»»²ú³ö
             foreach (var outDTO in template.Outputs)
             {
                 dto.Outputs.Add(new OutputDTO
@@ -242,7 +270,7 @@ namespace TerraCraft.Core.Loaders
                 });
             }
 
-            // æ›¿æ¢æ›¿æ¢è§„åˆ™
+            // Ìæ»»Ìæ»»¹æÔò
             foreach (var rep in template.Replacements)
             {
                 dto.Replacements.Add(new ReplacementDTO
@@ -255,13 +283,20 @@ namespace TerraCraft.Core.Loaders
                 });
             }
 
-            // æ›¿æ¢ RequiredTiles ä¸­çš„å ä½ç¬¦
-            for (int i = 0; i < dto.RequiredTiles.Count; i++)
+            // Ìæ»»Îï¿é
+            if (template.RequiredTiles != null)
             {
-                dto.RequiredTiles[i] = ReplacePlaceholders(dto.RequiredTiles[i], replacements);
+                dto.RequiredTiles = new List<string>();
+                foreach (var tile in template.RequiredTiles)
+                {
+                    string replaced = ReplacePlaceholders(tile, replacements);
+                    if (!string.IsNullOrWhiteSpace(replaced))
+                        dto.RequiredTiles.Add(replaced);
+                }
             }
 
-            // å¤åˆ¶ Pattern
+
+            // ¸´ÖÆPattern
             if (template.Pattern != null && template.Pattern.Any())
             {
                 dto.Pattern = new List<List<PatternCellDTO>>();
@@ -301,169 +336,184 @@ namespace TerraCraft.Core.Loaders
         }
         #endregion
 
+        #region DTO×ª»»Âß¼­
+        private GriddedRecipe? ConvertToStruct(GriddedRecipeDTO dto)
+        {
+            try
+            {
+                // ×ª»»RequiredTiles£¬ÔÊĞíÎª¿Õ
+                List<int> tileIds = null;
+                if (dto.RequiredTiles != null)
+                {
+                    tileIds = new List<int>();
+                    foreach (string tileStr in dto.RequiredTiles)
+                    {
+                        if (string.IsNullOrWhiteSpace(tileStr))
+                            continue; // ºöÂÔ¿Õ×Ö·û´®
+                        int id = TileIDResolver.ParseTileType(tileStr);
+                        if (id != 0)
+                            tileIds.Add(id);
+                        }
+                }
 
-        /// <summary>
-        /// ä» Pattern äºŒç»´æ•°ç»„ç”Ÿæˆ Ingredients åˆ—è¡¨ï¼Œå¹¶è‡ªåŠ¨è®¾ç½® GridWidth/Height
-        /// </summary>
+                // Èç¹û½âÎöºóÈÔÎª¿Õ£¬ÔòÊÓÎªÍ¨ÓÃ£¬¸³ÖµÎª null¡£
+                if (tileIds.Count == 0)
+                    tileIds = null;
+
+                // ×ª»»Ingredients£¨´ÓPattern»òIngredients£©
+                List<Ingredient> ingredients = new List<Ingredient>();
+                int gridWidth = 1;   // Ä¬ÈÏ³ß´ç£¬½öµ±Shaped = trueÇÒÎŞPatternÊ±¿ÉÄÜ±»AutoComputeDimensions¸²¸Ç
+                int gridHeight = 1;
+
+                // ÓÅÏÈÊ¹ÓÃPattern£¨ÊÊÓÃÓÚShapedÅä·½£©
+                if (dto.Shaped && dto.Pattern != null && dto.Pattern.Count > 0)
+                {
+                    ingredients = ParsePattern(dto.Pattern, out gridWidth, out gridHeight);
+                }
+                else if (dto.Ingredients != null)
+                {
+                    // ¼æÈİ¾ÉµÄ×ø±êÊ½£¨Shaped£©»òÎŞĞòÅä·½£¨Shaped = false£©
+                    foreach (var ingDTO in dto.Ingredients)
+                    {
+                        int itemType = 0;
+                        if (!string.IsNullOrEmpty(ingDTO.ItemId))
+                            itemType = ItemIDResolver.ParseItemType(ingDTO.ItemId);
+
+                        ingredients.Add(new Ingredient
+                        {
+                            X = ingDTO.X,
+                            Y = ingDTO.Y,
+                            ItemType = itemType,
+                            RecipeGroup = ingDTO.RecipeGroup,
+                            Amount = ingDTO.Amount
+                        });
+                    }
+                }
+
+                // ×ª»»Outputs
+                List<Output> outputs = new List<Output>();
+                if (dto.Outputs != null)
+                {
+                    foreach (var outDTO in dto.Outputs)
+                    {
+                        int itemType = ItemIDResolver.ParseItemType(outDTO.ItemId);
+                        outputs.Add(new Output
+                        {
+                            ItemType = itemType,
+                            Amount = outDTO.Amount,
+                            UseDurability = outDTO.UseDurability,
+                            MaxDurability = outDTO.MaxDurability,
+                            InitialDurability = outDTO.InitialDurability
+                        });
+                    }
+                }
+
+                // ×ª»»Replacements
+                List<Replacement> replacements = new List<Replacement>();
+                if (dto.Replacements != null)
+                {
+                    foreach (var repDTO in dto.Replacements)
+                    {
+                        int originalType = 0;
+                        if (!string.IsNullOrEmpty(repDTO.OriginalItemId))
+                            originalType = ItemIDResolver.ParseItemType(repDTO.OriginalItemId);
+
+                        int? replaceWithType = null;
+                        if (!string.IsNullOrEmpty(repDTO.ReplaceWith))
+                            replaceWithType = ItemIDResolver.ParseItemType(repDTO.ReplaceWith);
+
+                        replacements.Add(new Replacement
+                        {
+                            X = repDTO.X,
+                            Y = repDTO.Y,
+                            OriginalItemType = originalType,
+                            ReplaceWithType = replaceWithType,
+                            ReplaceAmount = repDTO.ReplaceAmount
+                        });
+                    }
+                }
+
+                // Èç¹ûÊÇÓĞĞÎ×´Åä·½µ«Î´Ê¹ÓÃPattern£¬ÇÒIngredientsÖĞÓĞ×ø±ê£¬×Ô¶¯¼ÆËã³ß´ç
+                if (dto.Shaped && (dto.Pattern == null || dto.Pattern.Count == 0))
+                {
+                    var tempRecipe = new GriddedRecipe
+                    {
+                        Id = dto.Id,
+                        GridWidth = 0,
+                        GridHeight = 0,
+                        Shaped = true,
+                        Ingredients = ingredients,
+                    };
+                    AutoComputeDimensions(ref tempRecipe);
+                    gridWidth = tempRecipe.GridWidth;
+                    gridHeight = tempRecipe.GridHeight;
+                }
+
+                var recipe = new GriddedRecipe
+                {
+                    Id = dto.Id,
+                    GridWidth = gridWidth,
+                    GridHeight = gridHeight,
+                    Shaped = dto.Shaped,
+                    RequiredTileIds = tileIds,
+                    Ingredients = ingredients,
+                    Outputs = outputs,
+                    Replacements = replacements
+                };
+
+                string tileInfo = tileIds == null ? "None" : string.Join(", ", tileIds.Select(id => $"{id}"));
+                string ingredientsInfo = ingredients.Count == 0 ? "None" : string.Join(", ", ingredients.Select(ing => {
+                    string itemInfo = ing.ItemType != 0 ? $"ItemID:{ing.ItemType}" : ing.RecipeGroup;
+                    return $"({ing.X},{ing.Y}):{itemInfo}¡Á{ing.Amount}";
+                }));
+                string outputsInfo = outputs.Count == 0 ? "None" : string.Join(", ", outputs.Select(output => $"ItemID:{output.ItemType}¡Á{output.Amount}"));
+                Mod.Logger.Debug($"[Recipe] ID: {dto.Id} | Type: {(dto.Shaped ? "Shaped" : "Shapeless")} | Size: {gridWidth}x{gridHeight} | Tiles: {tileInfo} | Ingredients: {ingredientsInfo} | Outputs: {outputsInfo}");
+                return recipe;
+            }
+            catch (Exception e)
+            {
+                Mod.Logger.Warn($"[TerraCraft] ×ª»»Åä·½Ê§°Ü: {dto.Id}\n{e.Message}");
+                return null;
+            }
+        }
+
         private List<Ingredient> ParsePattern(List<List<PatternCellDTO>> pattern, out int width, out int height)
         {
             var ingredients = new List<Ingredient>();
             height = pattern.Count;
-            width = height > 0 ? pattern[0].Count : 0;
+            width = 0;
 
-            // ç¡®ä¿æ‰€æœ‰è¡Œé•¿åº¦ä¸€è‡´ï¼ˆå–æœ€å¤§å®½åº¦ï¼‰
+            // È·±£ËùÓĞĞĞ³¤¶ÈÒ»ÖÂ£¨È¡×î´ó¿í¶È£©
             foreach (var row in pattern)
             {
                 if (row.Count > width) width = row.Count;
             }
 
-            for (int y = 0; y < pattern.Count; y++)
+            for (int y = 0; y < height; y++)
             {
                 var row = pattern[y];
                 for (int x = 0; x < width; x++)
                 {
-                    PatternCellDTO cell = null;
-                    if (x < row.Count)
-                        cell = row[x];
-
-                    // ç©ºå•å…ƒæ ¼ï¼ˆnull æˆ– ItemId/RecipeGroup éƒ½ä¸ºç©ºï¼‰
-                    if (cell == null || (string.IsNullOrEmpty(cell.ItemId) && string.IsNullOrEmpty(cell.RecipeGroup)))
-                        continue;
-
-                    int amount = cell.Amount ?? 1;
-                    ingredients.Add(new Ingredient
+                    if (x < row.Count && row[x] != null)
                     {
-                        X = x,
-                        Y = y,
-                        ItemType = string.IsNullOrEmpty(cell.ItemId) ? 0 : ItemIDResolver.ParseItemType(cell.ItemId),
-                        RecipeGroup = cell.RecipeGroup,
-                        Amount = amount
-                    });
+                        var cell = row[x];
+                        int itemType = 0;
+                        if (!string.IsNullOrEmpty(cell.ItemId))
+                            itemType = ItemIDResolver.ParseItemType(cell.ItemId);
+
+                        ingredients.Add(new Ingredient
+                        {
+                            X = x,
+                            Y = y,
+                            ItemType = itemType,
+                            RecipeGroup = cell.RecipeGroup,
+                            Amount = cell.Amount ?? 1
+                        });
+                    }
                 }
             }
 
             return ingredients;
-        }
-
-        /// <summary>
-        /// å°† DTO è½¬æ¢ä¸ºè¿è¡Œæ—¶ structï¼ŒåŒæ—¶å°†å­—ç¬¦ä¸² ID è§£æä¸ºæ•´æ•° ID
-        /// </summary>
-        private GriddedRecipe? ConvertToStruct(GriddedRecipeDTO dto)
-        {
-            if (dto == null) return null;
-
-            // è½¬æ¢ RequiredTiles
-            List<int> tileIds = new List<int>();
-            if (dto.RequiredTiles != null)
-            {
-                foreach (string tileStr in dto.RequiredTiles)
-                {
-                    int id = TileIDResolver.ParseTileType(tileStr);
-                    if (id != 0) tileIds.Add(id);
-                }
-            }
-
-            List<Ingredient> ingredients = new List<Ingredient>();
-            int gridWidth = 1;   // é»˜è®¤å°ºå¯¸ï¼Œä»…åœ¨ Shaped = true ä¸”æ—  Pattern æ—¶å¯èƒ½è¢« AutoComputeDimensions è¦†ç›–
-            int gridHeight = 1;
-
-            // ä¼˜å…ˆä½¿ç”¨ Patternï¼ˆé€‚ç”¨äº Shaped é…æ–¹ï¼‰
-            if (dto.Shaped && dto.Pattern != null && dto.Pattern.Count > 0)
-            {
-                ingredients = ParsePattern(dto.Pattern, out gridWidth, out gridHeight);
-            }
-            else if (dto.Ingredients != null)
-            {
-                // å…¼å®¹æ—§çš„åæ ‡å¼ï¼ˆShapedï¼‰æˆ–æ— åºé…æ–¹ï¼ˆShaped = falseï¼‰
-                foreach (var ingDTO in dto.Ingredients)
-                {
-                    int itemType = 0;
-                    if (!string.IsNullOrEmpty(ingDTO.ItemId))
-                        itemType = ItemIDResolver.ParseItemType(ingDTO.ItemId);
-
-                    ingredients.Add(new Ingredient
-                    {
-                        X = ingDTO.X,
-                        Y = ingDTO.Y,
-                        ItemType = itemType,
-                        RecipeGroup = ingDTO.RecipeGroup,
-                        Amount = ingDTO.Amount
-                    });
-                }
-            }
-
-            // è½¬æ¢ Outputs
-            List<Output> outputs = new List<Output>();
-            if (dto.Outputs != null)
-            {
-                foreach (var outDTO in dto.Outputs)
-                {
-                    int itemType = ItemIDResolver.ParseItemType(outDTO.ItemId);
-                    outputs.Add(new Output
-                    {
-                        ItemType = itemType,
-                        Amount = outDTO.Amount,
-                        UseDurability = outDTO.UseDurability,
-                        MaxDurability = outDTO.MaxDurability,
-                        InitialDurability = outDTO.InitialDurability
-                    });
-                }
-            }
-
-            // è½¬æ¢ Replacements
-            List<Replacement> replacements = new List<Replacement>();
-            if (dto.Replacements != null)
-            {
-                foreach (var repDTO in dto.Replacements)
-                {
-                    int originalType = 0;
-                    if (!string.IsNullOrEmpty(repDTO.OriginalItemId))
-                        originalType = ItemIDResolver.ParseItemType(repDTO.OriginalItemId);
-
-                    int? replaceWithType = null;
-                    if (!string.IsNullOrEmpty(repDTO.ReplaceWith))
-                        replaceWithType = ItemIDResolver.ParseItemType(repDTO.ReplaceWith);
-
-                    replacements.Add(new Replacement
-                    {
-                        X = repDTO.X,
-                        Y = repDTO.Y,
-                        OriginalItemType = originalType,
-                        ReplaceWithType = replaceWithType,
-                        ReplaceAmount = repDTO.ReplaceAmount
-                    });
-                }
-            }
-
-            // å¦‚æœæ˜¯æœ‰åºé…æ–¹ä½†æœªä½¿ç”¨ Patternï¼Œä¸” Ingredients ä¸­æœ‰åæ ‡ï¼Œè‡ªåŠ¨è®¡ç®—å°ºå¯¸
-            if (dto.Shaped && (dto.Pattern == null || dto.Pattern.Count == 0))
-            {
-                var tempRecipe = new GriddedRecipe
-                {
-                    Id = dto.Id,
-                    GridWidth = 0,
-                    GridHeight = 0,
-                    Shaped = true,
-                    Ingredients = ingredients,
-                };
-                AutoComputeDimensions(ref tempRecipe);
-                gridWidth = tempRecipe.GridWidth;
-                gridHeight = tempRecipe.GridHeight;
-            }
-
-            var recipe = new GriddedRecipe
-            {
-                Id = dto.Id,
-                GridWidth = gridWidth,
-                GridHeight = gridHeight,
-                Shaped = dto.Shaped,
-                RequiredTileIds = tileIds,
-                Ingredients = ingredients,
-                Outputs = outputs,
-                Replacements = replacements
-            };
-
-            return recipe;
         }
 
         private void AutoComputeDimensions(ref GriddedRecipe recipe)
@@ -493,5 +543,6 @@ namespace TerraCraft.Core.Loaders
             recipe.GridWidth = maxX + 1;
             recipe.GridHeight = maxY + 1;
         }
+        #endregion
     }
 }

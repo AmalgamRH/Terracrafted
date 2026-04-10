@@ -10,8 +10,8 @@ namespace TerraCraft.Core.Systems.GridCrafting
     {
         private GridCraftingUIRegister UIRegister => ModContent.GetInstance<GridCraftingUIRegister>();
 
-        private readonly List<int> EnableGridCraftingTiles = [TileID.WorkBenches, TileID.Anvils];
-        private readonly List<int> EnableGridCraftingItems = [ItemID.WorkBench, ItemID.IronAnvil];
+        private readonly List<int> EnableGridCraftingTiles = [TileID.WorkBenches, TileID.Anvils, TileID.HeavyWorkBench, TileID.MythrilAnvil];
+        private readonly List<int> EnableGridCraftingItems = [ItemID.WorkBench, ItemID.IronAnvil, ItemID.HeavyWorkBench, ItemID.MythrilAnvil];
         public override void MouseOver(int i, int j, int type)
         {
             int index = EnableGridCraftingTiles.IndexOf(type);

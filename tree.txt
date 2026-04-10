@@ -5,8 +5,8 @@ TerraCraft/
 │   │   ├── HealthBar2.png
 │   │   └── HealthBar3.png
 │   └── Recipes/
-│       ├── Recipe1.json
-│       └── TestRecipes.json
+│       ├── TestRecipes.json
+│       └── template_normal_bars.json
 ├── Content/
 │   └── Items/
 │       └── Materials/
@@ -24,18 +24,19 @@ TerraCraft/
 │   │       └── Replacement.cs
 │   ├── Loaders/
 │   │   ├── AutoloadUILoader.cs
+│   │   ├── GridRecipeLoader.cs
 │   │   ├── IOrderedLoadable.cs
 │   │   └── OrderedLoaderManager.cs
 │   ├── Network/
 │   │   └── NetworkPacketHandler.cs
-│   ├── RecipeGroups.cs
 │   ├── Systems/
 │   │   ├── Durability/
 │   │   │   └── DurabilityGItem.cs
 │   │   └── GridCrafting/
-│   │       ├── GridCraftingGlobalTile.cs
+│   │       ├── CraftingStationSize.cs
+│   │       ├── CraftingTileGlobal.cs
 │   │       ├── GridCraftingMatcher.cs
-│   │       └── GridRecipeRegister.cs
+│   │       └── TileCompatibilitySystem.cs
 │   ├── UI/
 │   │   ├── AutoloadUIState.cs
 │   │   ├── GridCrafting/
@@ -45,17 +46,52 @@ TerraCraft/
 │   │   └── VanillaItemSlotWrapper.cs
 │   └── Utils/
 │       ├── ColorHelper.cs
-│       ├── CraftingStationSize.cs
 │       ├── ItemIDResolver.cs
 │       ├── RecipeGroupResolver.cs
 │       ├── TileIDResolver.cs
 │       └── UIHelper.cs
+├── LICENSE.txt
+├── Localization/
+│   └── en-US_Mods.TerraCraft.hjson
+├── Properties/
+│   └── launchSettings.json
+├── README.md
 ├── TerraCraft.cs
 ├── TerraCraft.csproj
+├── TerraCraft.sln
+├── bin/
+│   └── Debug/
+│       └── net8.0/
+│           ├── TerraCraft.deps.json
+│           ├── TerraCraft.dll
+│           └── TerraCraft.pdb
 ├── build.txt
 ├── description.txt
 ├── description_workshop.txt
 ├── icon.png
 ├── icon_small.png
+├── obj/
+│   ├── Debug/
+│   │   └── net8.0/
+│   │       ├── TerraCraft.AssemblyInfo.cs
+│   │       ├── TerraCraft.AssemblyInfoInputs.cache
+│   │       ├── TerraCraft.GeneratedMSBuildEditorConfig.editorconfig
+│   │       ├── TerraCraft.assets.cache
+│   │       ├── TerraCraft.csproj.AssemblyReference.cache
+│   │       ├── TerraCraft.csproj.BuildWithSkipAnalyzers
+│   │       ├── TerraCraft.csproj.CoreCompileInputs.cache
+│   │       ├── TerraCraft.csproj.FileListAbsolute.txt
+│   │       ├── TerraCraft.dll
+│   │       ├── TerraCraft.pdb
+│   │       ├── TerraCraft.sourcelink.json
+│   │       ├── ref/
+│   │       │   └── TerraCraft.dll
+│   │       └── refint/
+│   │           └── TerraCraft.dll
+│   ├── TerraCraft.csproj.nuget.dgspec.json
+│   ├── TerraCraft.csproj.nuget.g.props
+│   ├── TerraCraft.csproj.nuget.g.targets
+│   ├── project.assets.json
+│   └── project.nuget.cache
 ├── tree.py
 └── tree.txt
