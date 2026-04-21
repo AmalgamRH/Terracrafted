@@ -67,16 +67,17 @@ namespace TerraCraft.Core.Systems.Smelting
             // Shift+左键：直接存入背包
             if (Main.keyState.IsKeyDown(Keys.LeftShift) || Main.keyState.IsKeyDown(Keys.RightShift))
             {
-                Item itemToTake = _outputSlot.Item.Clone();
-                int leftover = Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("SmeltingReplacement"), itemToTake, itemToTake.stack);
+                Item itemToTake = _outputSlot.Item.Clone(); // 克隆当前输出槽物品，避免直接修改原物品
+                // 尝试将物品放入玩家背包（包括热键栏和普通背包）
+                var Item = Main.LocalPlayer.GetItem(Main.myPlayer, itemToTake, GetItemSettings.InventoryUIToInventorySettings);
+                int leftover = Item.stack;
                 if (leftover <= 0)
                 {
-                    _outputSlot.Item.TurnToAir();
+                    _outputSlot.Item.TurnToAir();       // 全部取出成功，清空槽位
                 }
                 else
                 {
-                    // 如果背包满了部分未放入，则放回（理论上 QuickSpawnItem 会自动掉落剩余，但这里安全处理）
-                    _outputSlot.Item.stack = leftover;
+                    _outputSlot.Item.stack = leftover;  // 部分取出失败，保留剩余数量
                 }
                 SoundEngine.PlaySound(SoundID.Grab);
                 Main.mouseLeftRelease = false;

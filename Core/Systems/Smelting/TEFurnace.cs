@@ -31,7 +31,7 @@ namespace TerraCraft.Core.Systems.Smelting
         private int _currentFuelType = 0;
         private int _cachedMainItemType = -1;
         private bool _needSync;
-
+        private (int type, int stack)[] _cachedMaterialSlots = new (int, int)[MAX_MATERIALS];
         public float GetProgressRatio()
         {
             if (_requiredTotalTime <= 0f) return 0f;
@@ -46,7 +46,11 @@ namespace TerraCraft.Core.Systems.Smelting
 
         public TEFurnace()
         {
-            for (int i = 0; i < MAX_MATERIALS; i++) material[i] = new Item();
+            for (int i = 0; i < MAX_MATERIALS; i++)
+            {
+                material[i] = new Item();
+                _cachedMaterialSlots[i] = (0, 0);
+            }
         }
 
         public override void Update()
@@ -57,19 +61,57 @@ namespace TerraCraft.Core.Systems.Smelting
 
         private void UpdateSmelting()
         {
-            int mainType = GetMainMaterialType();
-            bool recipeChanged = mainType != _cachedMainItemType;
-            if (recipeChanged) _cachedMainItemType = mainType;
-
-            SmeltingRecipe? newRecipe = null;
-            if (mainType != -1)
-                newRecipe = SmeltingMatcher.GetBestRecipe(tileID, mainType, material, fuel);
-
-            bool recipeValid = newRecipe.HasValue && newRecipe.Value.Id != null;
-
-            if (!recipeValid || (recipeChanged && !AreRecipesEqual(_currentRecipe, newRecipe)))
+            // 1. 检测材料槽内容是否变化（类型或数量）
+            bool materialsChanged = false;
+            for (int i = 0; i < MAX_MATERIALS; i++)
             {
-                _currentRecipe = newRecipe;
+                int curType = material[i]?.type ?? 0;
+                int curStack = material[i]?.stack ?? 0;
+                if (curType != _cachedMaterialSlots[i].type || curStack != _cachedMaterialSlots[i].stack)
+                {
+                    materialsChanged = true;
+                    _cachedMaterialSlots[i] = (curType, curStack);
+                }
+            }
+
+            if (materialsChanged)
+            {
+                // 尝试匹配新配方（基于当前材料）
+                int mainType = GetMainMaterialType();
+                SmeltingRecipe? newRecipe = null;
+                if (mainType != -1)
+                    newRecipe = SmeltingMatcher.GetBestRecipe(tileID, mainType, material, fuel);
+
+                // 判断是否可以继续使用当前配方而不重置进度
+                bool canContinue = false;
+                if (_currentRecipe.HasValue && newRecipe.HasValue && _currentRecipe.Value.Id == newRecipe.Value.Id)
+                {
+                    // 配方 ID 相同，再检查材料数量、输出空间、燃料等是否仍满足
+                    canContinue = CanSmelt();
+                }
+
+                if (!canContinue)
+                {
+                    // 无法继续：配方改变或材料不足 → 重置进度
+                    _currentRecipe = newRecipe;
+                    progress = 0;
+                    _requiredTotalTime = 0;
+                    MarkDirty();
+                }
+                // 注意：如果 canContinue == true，则保留原 _currentRecipe 和 progress，不做任何改动
+                _cachedMainItemType = mainType; // 更新主材料缓存
+            }
+
+            // 2. 正常配方匹配（处理燃料变化等情况）
+            int currentMainType = GetMainMaterialType();
+            SmeltingRecipe? matchedRecipe = null;
+            if (currentMainType != -1)
+                matchedRecipe = SmeltingMatcher.GetBestRecipe(tileID, currentMainType, material, fuel);
+
+            if (!AreRecipesEqual(_currentRecipe, matchedRecipe))
+            {
+                // 配方发生变化（例如燃料类型改变导致可用配方不同）
+                _currentRecipe = matchedRecipe;
                 progress = 0;
                 _requiredTotalTime = 0;
                 MarkDirty();
@@ -220,6 +262,10 @@ namespace TerraCraft.Core.Systems.Smelting
 
             progress = 0;
             _cachedMainItemType = -1;
+
+            for (int i = 0; i < MAX_MATERIALS; i++)
+                _cachedMaterialSlots[i] = (material[i]?.type ?? 0, material[i]?.stack ?? 0);
+            MarkDirty();
         }
 
         private void DeductIngredients(SmeltingRecipe recipe)
@@ -334,6 +380,9 @@ namespace TerraCraft.Core.Systems.Smelting
             output = ItemIO.Receive(reader, readStack: true);
 
             _cachedMainItemType = -1;
+
+            for (int i = 0; i < MAX_MATERIALS; i++)
+                _cachedMaterialSlots[i] = (material[i]?.type ?? 0, material[i]?.stack ?? 0);
         }
         public override void SaveData(TagCompound tag)
         {
@@ -370,6 +419,9 @@ namespace TerraCraft.Core.Systems.Smelting
             if (outputTag != null) output = ItemIO.Load(outputTag);
 
             _cachedMainItemType = -1;
+
+            for (int i = 0; i < MAX_MATERIALS; i++)
+                _cachedMaterialSlots[i] = (material[i]?.type ?? 0, material[i]?.stack ?? 0);
         }
         #endregion
 

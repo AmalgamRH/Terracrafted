@@ -24,20 +24,53 @@ namespace TerraCraft.Core.VanillaExt
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
             if (isFuel)
+                InsertFuelTooltip(tooltips);
+
+            switch (item.type)
             {
-                int materialIndex = tooltips.FindIndex(t => t.Mod == "Terraria" && t.Name == "Material");
-                int firstPrefixIndex = tooltips.FindIndex(t => t.Mod == "Terraria" && t.Name.StartsWith("Prefix"));
+                case ItemID.GlassKiln:
+                    AddOrReplaceTooltipLine(tooltips, "SmeltingInfo", TerraCraft.GetLocalizedText("Tooltips.GlassKiln"));
+                    break;
+                case ItemID.Hellforge:
+                    tooltips.Add(new TooltipLine(Mod, "SmeltingInfo", TerraCraft.GetLocalizedText("Tooltips.Hellforge")));
+                    break;
+                case ItemID.IronAnvil:
+                case ItemID.LeadAnvil:
+                    AddOrReplaceTooltipLine(tooltips, "SmeltingInfo", TerraCraft.GetLocalizedText("Tooltips.IronAnvil"));
+                    break;
+                case ItemID.HeavyWorkBench:
+                    AddOrReplaceTooltipLine(tooltips, "SmeltingInfo", TerraCraft.GetLocalizedText("Tooltips.HeavyWorkbench"));
+                    break;
+            }
+        }
 
-                int insertIndex;
-                if (materialIndex != -1)
-                    insertIndex = materialIndex + 1;
-                else if (firstPrefixIndex != -1)
-                    insertIndex = firstPrefixIndex;
-                else
-                    insertIndex = tooltips.Count;
+        private void InsertFuelTooltip(List<TooltipLine> tooltips)
+        {
+            int materialIndex = tooltips.FindIndex(t => t.Mod == "Terraria" && t.Name == "Material");
+            int firstPrefixIndex = tooltips.FindIndex(t => t.Mod == "Terraria" && t.Name.StartsWith("Prefix"));
 
-                var newLine = new TooltipLine(Mod, "Fuel", TerraCraft.GetLocalizedText("Tooltips.Fuel"));
-                tooltips.Insert(insertIndex, newLine);
+            int insertIndex;
+            if (materialIndex != -1)
+                insertIndex = materialIndex + 1;
+            else if (firstPrefixIndex != -1)
+                insertIndex = firstPrefixIndex;
+            else
+                insertIndex = tooltips.Count;
+
+            var newLine = new TooltipLine(Mod, "Fuel", TerraCraft.GetLocalizedText("Tooltips.Fuel"));
+            tooltips.Insert(insertIndex, newLine);
+        }
+
+        private void AddOrReplaceTooltipLine(List<TooltipLine> tooltips, string lineName, string text)
+        {
+            var legacyLine = tooltips.Find(t => t.Mod == "Terraria" && t.Name.StartsWith("Tooltip"));
+            if (legacyLine == null)
+            {
+                tooltips.Add(new TooltipLine(Mod, lineName, text));
+            }
+            else
+            {
+                legacyLine.Text = text;
             }
         }
     }

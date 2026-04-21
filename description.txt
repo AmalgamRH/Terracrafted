@@ -18,9 +18,10 @@ Grid Crafting System
 After enabling "Use Overhaul Gameplay" in the config, you can freely arrange materials in a crafting grid. The Guide NPC will also show the corresponding recipes.
 启用配置中的「完全替代原版合成体系」后，你可以在合成网格中自由摆放材料进行合成。同时，向导 NPC 也会显示对应配方。
 
+Smelting system (similar to Minecraft's furnace)
+熔炼系统（类似Minecraft的熔炉）
+
 📅 Future Plans / 未来计划
-Add a smelting system (similar to Minecraft's furnace)
-添加熔炼系统（类似Minecraft的熔炉）
 Add durability and anvil repair systems
 添加耐久度与铁砧修复系统
 

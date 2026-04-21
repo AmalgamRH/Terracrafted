@@ -10,5 +10,12 @@ Configs: {
 	}
 }
 
-Tooltips.Fuel: 燃料
+Tooltips: {
+	Fuel: 燃料
+	GlassKiln: 仅能熔炼矿物，且熔炼速度提升至1.5倍
+	Hellforge: 基础熔炼速度为1.2倍；若熔炼矿物则提升至1.5倍
+	IronAnvil: 用于修补工具和装备
+	HeavyWorkbench: 用于制作更高级的配方，拥有工作台的全部配方
+}
+
 UI.CraftStation: 需要制作站：

@@ -10,5 +10,12 @@ Configs: {
 	}
 }
 
-Tooltips.Fuel: Fuel
+Tooltips: {
+	Fuel: Fuel
+	GlassKiln: Can only smelt ores and increases smelting speed to 150%
+	Hellforge: Has 120% of the base smelting speed, or 150% if it's ore
+	IronAnvil: Used to repair tools and equipment
+	HeavyWorkbench: Used for advanced crafting recipes, and includes all the recipes of workbenches
+}
+
 UI.CraftStation: "Craft Station: "

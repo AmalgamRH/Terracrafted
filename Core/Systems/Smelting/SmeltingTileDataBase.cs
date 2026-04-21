@@ -34,10 +34,10 @@ namespace TerraCraft.Core.Systems.Smelting
         /// </summary>
         public static readonly Dictionary<int, SmeltingTileData> TileData = new()
         {
-            // 普通熔炉（基础速度 1.0，没有特殊标签加成）
+            // 普通熔炉（基础速度1.0，没有特殊标签加成）
             { TileID.Furnaces, new SmeltingTileData(1.0f) },
 
-            // 玻璃熔炉（无法熔炼其他矿物，但对 "Ore" 标签有 1.5 倍）
+            // 玻璃熔炉（无法熔炼其他配方，但对"Ore"标签1.5倍速度）
             { TileID.GlassKiln, new SmeltingTileData(0f, new Dictionary<string, float> { { SmeltingLabel.Ore, 1.5f } }) },
 
             { TileID.Hellforge, new SmeltingTileData(1.2f, new Dictionary<string, float> { { SmeltingLabel.Ore, 1.5f } }) },
@@ -53,19 +53,19 @@ namespace TerraCraft.Core.Systems.Smelting
         public static float? GetSpeedMultiplier(int tileType, string label)
         {
             if (!TileData.TryGetValue(tileType, out var data))
-                return 1f; // 未注册默认 1 倍
+                return 1f; // 未注册默认1倍
             if (!string.IsNullOrEmpty(label) && data.LabelSpeedMultipliers.TryGetValue(label, out var labelMulti))
                 return labelMulti;
             if (data.BaseSpeedMultiplier > 0f)
                 return data.BaseSpeedMultiplier;
-            return null; // 基础速度为 0 且没有标签倍率 → 不支持
+            return null; // 基础速度为0且没有标签倍率，不支持
         }
         public static bool CanSmelt(int tileType, string label)
         {
             if (!TileData.TryGetValue(tileType, out var data))
                 return true; // 未注册的熔炉默认允许
             if (data.BaseSpeedMultiplier <= 0f && !data.LabelSpeedMultipliers.ContainsKey(label))
-                return false; // 基础速度为 0 且没有标签倍率 → 禁止
+                return false; // 基础速度为0且没有标签倍率，禁止
             return true;
         }
         /// <summary>检查某个熔炉是否被本系统支持（即是否在 TileData 中有注册）</summary>
