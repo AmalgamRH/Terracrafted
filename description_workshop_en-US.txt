@@ -1,4 +1,4 @@
-﻿[b]TerraCraft[/b]
+﻿[b]Terracrafted[/b]
 [i]A Minecraft-style crafting and gameplay enhancement mod for Terraria.[/i]
 
 [hr][/hr]
@@ -33,5 +33,5 @@ Feel free to suggest features or report bugs.
 This project is open source under [b]GPL 3.0[/b]. Issues or pull requests are welcome.
 
 [b]🔗 Project Repository[/b]
-[url]https://github.com/AmalgamRH/TerraCraft[/url][quote=tModLoader TerraCraft]
+[url]https://github.com/AmalgamRH/Terracrafted[/url][quote=tModLoader Terracrafted]
 Developed By Amalgam[/quote]

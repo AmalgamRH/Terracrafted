@@ -1,4 +1,4 @@
-TerraCraft/
+﻿TerraCraft/
 ├── Assets/
 │   ├── DurabilityData/
 │   ├── Recipes/
@@ -9,6 +9,7 @@ TerraCraft/
 │   │   │   └── template_torches.json
 │   │   ├── CraftStations/
 │   │   │   ├── recipe_furnaces.json
+│   │   │   ├── recipe_sawmill.json
 │   │   │   ├── recipe_workbenches.json
 │   │   │   └── template_anvils.json
 │   │   ├── Equipments/
@@ -23,8 +24,9 @@ TerraCraft/
 │   │   ├── Fuels/
 │   │   │   └── fuels_1.json
 │   │   └── Recipes/
-│   │       ├── smelting_example.json
+│   │       ├── smelting_materials.json
 │   │       ├── smelting_ore.json
+│   │       ├── template_coal.json
 │   │       └── template_example.json
 │   ├── Tiles/
 │   │   ├── Tiles_17_Ext.png
@@ -200,8 +202,8 @@ TerraCraft/
 ├── TerraCraft.sln
 ├── build.txt
 ├── description.txt
-├── description_workshop-en.txt
 ├── description_workshop.txt
+├── description_workshop_en-US.txt
 ├── icon.png
 ├── tree.py
 └── tree.txt

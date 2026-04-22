@@ -1,4 +1,4 @@
-﻿TerraCraft
+﻿Terracrafted
 
 A Minecraft-style crafting and gameplay enhancement mod for Terraria.
 一款为《泰拉瑞亚》打造的Minecraft风格合成与玩法增强模组。
