@@ -1,4 +1,4 @@
-# TerraCraft 模组
+# Terracrafted 模组
 
 一个通过 tModLoader 为泰拉瑞亚提供的Minecraft风格的合成与玩法增强模组，目前具有基于网格的合成系统和耐久度机制（未完成）。
 

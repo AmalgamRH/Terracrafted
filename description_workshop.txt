@@ -1,4 +1,4 @@
-﻿[b]TerraCraft[/b]
+﻿[b]Terracrafted[/b]
 [i]一款为《泰拉瑞亚》打造的Minecraft风格合成与玩法增强模组。[/i]
 
 [hr][/hr]
@@ -41,4 +41,6 @@
 [hr][/hr]
 
 [b]🔗 项目地址[/b]
-[url]https://github.com/AmalgamRH/TerraCraft[/url]
+[url]https://github.com/AmalgamRH/Terracrafted[/url]
+[quote=tModLoader Terracrafted]
+Developed By Amalgam[/quote]

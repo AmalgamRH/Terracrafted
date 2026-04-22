@@ -1,4 +1,4 @@
-﻿# TerraCraft Mod
+﻿# Terracrafted Mod
 
 A Minecraft-style synthesis and gameplay enhancement mod provided through tModLoader for Terraria, currently featuring a grid-based synthesis system and durability mechanism (unfinished).
 

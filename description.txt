@@ -1,4 +1,4 @@
-﻿TerraCraft
+﻿Terracrafted
 
 A Minecraft-style crafting and gameplay enhancement mod for Terraria.
 一款为《泰拉瑞亚》打造的Minecraft风格合成与玩法增强模组。
@@ -7,7 +7,7 @@ This mod currently features a grid-based crafting system, with plans to introduc
 本模组目前提供基于网格的合成系统，未来计划加入更多受Minecraft启发的机制，致力于带来不同于原版的道具获取与制作体验。
 
 This mod is a complete rewrite and expansion of its predecessor, MinecraftWorkbench (also by me) from the 1.4 Alpha days.
-本模组前身为 1.4 Alpha 时期的MinecraftWorkbench，TerraCraft是其全面重写与功能拓展的全新版本。
+本模组前身为 1.4 Alpha 时期的MinecraftWorkbench，Terracrafted是其全面重写与功能拓展的全新版本。
 
 ⚠️ Note: The mod is in early development, and recipes are still incomplete. To try it out, please enable the relevant options in the config file.
 ⚠️ 注意：模组目前处于早期开发阶段，配方尚不完善。体验时请在配置文件中启用相关选项。
