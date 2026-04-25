@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using TerraCraft.Content.Tiles.Furnitures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace TerraCraft.Core.Systems.GridCrafting
 {
@@ -13,6 +15,9 @@ namespace TerraCraft.Core.Systems.GridCrafting
         {
             { TileID.WorkBenches,    (3, 3) },
             { TileID.HeavyWorkBench, (3, 3) },
+            { ModContent.TileType<EvilWorkBenches>(),    (4, 4) },
+            { ModContent.TileType<MythrilWorkBenches>(), (5, 5) },
+
             { TileID.Sawmill,        (5, 3) },
             { TileID.Loom,           (3, 3) },
             { TileID.LivingLoom,     (5, 3) },
@@ -23,6 +28,7 @@ namespace TerraCraft.Core.Systems.GridCrafting
             { TileID.BoneWelder,     (5, 3) },
             { TileID.FleshCloningVat,(5, 3) },
             { TileID.LesionStation,  (5, 3) },
+
             { TileID.LunarCraftingStation,  (8, 8) }
         };
 

@@ -10,6 +10,9 @@ using TerraCraft.Core.Utils;
 using Terraria.ModLoader;
 using System;
 using System.Linq;
+using System.Text;
+using Terraria.Localization;
+using System.Reflection;
 
 namespace TerraCraft.Core.UI.GridCrafting.Preview
 {
@@ -24,6 +27,7 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
         private readonly int _gridWidth;
         private readonly int _gridHeight;
         public int OutputItemType => _outputSlot?.Item?.type ?? 0;
+        public List<string> Conditions;
         /// <summary>
         /// 构造预览面板
         /// </summary>
@@ -31,11 +35,12 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
         /// <param name="gridHeight">配方网格高度</param>
         /// <param name="inputs">输入物品数组（按先行后列顺序）</param>
         /// <param name="output">输出物品</param>
-        /// <param name="stationTileId">工作台图格ID（用于显示图标，可选）</param>
+        /// <param name="stationTileId">工作台TileID（用于显示图标）</param>
         /// <param name="stationItemIcon">工作台物品图标ID（可选）</param>
-        public UICraftPreviewPanel(int gridWidth, int gridHeight, Item[] inputs, Item output,
+        public UICraftPreviewPanel(int gridWidth, int gridHeight, Item[] inputs, Item output, List<string> conditions,
                              int stationTileId = 0, int stationItemIcon = ItemID.None)
         {
+            Conditions = conditions;
             _gridWidth = gridWidth;
             _gridHeight = gridHeight;
             BackgroundColor = new Color(45, 55, 95) * 0.85f;
@@ -97,6 +102,7 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
             float outputBottom = _inputSlots[_inputSlots.Count - 1].GetDimensions().Y + slotSize;
             float contentBottom = outputBottom;
 
+            string conditionsText = GetConditionsTooltip(conditions) ?? "";
             if (stationItemIcon > ItemID.None)
             {
                 Main.instance.LoadItem(stationItemIcon);
@@ -108,13 +114,20 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
                 workstation.Top.Set(iconTop, 0f);
 
                 Item workstationItem = new Item(stationItemIcon);
-                workstationItem.SetNameOverride($"{TerraCraft.GetLocalizedText("UI.CraftStation")}{Lang.GetItemNameValue(stationItemIcon)}");
+                string stationText = TerraCraft.GetLocalizedText("UI.CraftStation") ?? "";
+                string stationName = Lang.GetItemNameValue(stationItemIcon) ?? "";
+                string fullTooltip = $"{stationText}{stationName}\n{conditionsText}";
+                workstationItem.SetNameOverride(fullTooltip);
                 workstation.Item = workstationItem;
                 workstation.Context = ItemSlot.Context.ChatItem;
                 Append(workstation);
-
                 float iconBottom = iconTop + slotSize;
                 contentBottom = Math.Max(contentBottom, iconBottom);
+            }
+            else if (!String.IsNullOrEmpty(conditionsText))
+            {
+                conditionsText = GetConditionsTooltip(conditions);
+                _outputSlot.Item.SetNameOverride($"{Lang.GetItemNameValue(_outputSlot.Item.type)}\n{conditionsText}");
             }
 
             // 设置面板尺寸（宽度不变，高度取内容最大底部 + 下边距）
@@ -129,13 +142,14 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
             ConvertInputsToItemArray(recipe, out var nameOverrides),
             nameOverrides,
             ConvertOutputToItem(recipe),
+            recipe.Conditions,
             stationTileId, stationItemIcon)
         {
         }
 
-        public UICraftPreviewPanel(int gridWidth, int gridHeight, Item[] inputs, string[] displayNameOverrides, Item output,
+        public UICraftPreviewPanel(int gridWidth, int gridHeight, Item[] inputs, string[] displayNameOverrides, Item output, List<string> conditions,
                      int stationTileId = 0, int stationItemIcon = ItemID.None)
-            : this(gridWidth, gridHeight, inputs, output, stationTileId, stationItemIcon)
+            : this(gridWidth, gridHeight, inputs, output, conditions, stationTileId, stationItemIcon)
         {
             if (displayNameOverrides != null)
             {
@@ -162,6 +176,22 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
             return 0;
         }
 
+        private string GetConditionsTooltip(List<string> conditions)
+        {
+            if (conditions == null || conditions.Count == 0)
+                return null;
+
+            var sb = new StringBuilder();
+            foreach (string condStr in conditions)
+            {
+                Condition cond = ConditionResolver.Parse(condStr);
+                if (cond != null)
+                    sb.AppendLine("- " + cond.Description.Value);
+                else
+                    sb.AppendLine("- " + condStr);
+            }
+            return sb.ToString().TrimEnd('\r', '\n');
+        }
         private static Item ConvertOutputToItem(GriddedRecipe recipe)
         {
             if (recipe.Outputs != null && recipe.Outputs.Count > 0)

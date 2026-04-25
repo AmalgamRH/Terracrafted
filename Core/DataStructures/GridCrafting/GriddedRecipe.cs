@@ -12,6 +12,7 @@ namespace TerraCraft.Core.DataStructures.GridCrafting
         public List<RecipeIngredient> Ingredients { get; set; }
         public List<RecipeOutput> Outputs { get; set; }
         public List<RecipeReplacement> Replacements { get; set; }
+        public List<string> Conditions { get; set; }
 
         public GriddedRecipe() // 这里不要初始化 RequiredTileIds，保持为空
         {

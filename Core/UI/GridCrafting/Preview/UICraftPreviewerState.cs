@@ -254,6 +254,7 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
                     Inputs = inputs,
                     DisplayNameOverrides = nameOverrides,
                     Output = outputItem,
+                    Conditions = recipe.Conditions,
                     StationTileId = stationTileId,
                     StationItemIcon = stationItemIcon
                 };
@@ -301,6 +302,7 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
                     DisplayNameOverrides = nameOverrides,
                     Output = outputItem,
                     StationTileId = stationTileId,
+                    Conditions = recipe.Conditions,
                     StationItemIcon = stationItemIcon
                 };
             }
@@ -335,6 +337,7 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
                 data.Inputs,
                 data.DisplayNameOverrides,
                 data.Output,
+                data.Conditions,
                 data.StationTileId,
                 data.StationItemIcon
             );
@@ -372,5 +375,6 @@ namespace TerraCraft.Core.UI.GridCrafting.Preview
         public int StationTileId { get; set; }
         public int StationItemIcon { get; set; }
         public string[] DisplayNameOverrides { get; set; }
+        public List<string> Conditions { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace TerraCraft.Core.DataStructures.GridCrafting
     public class RecipeDatabase
     {
         public List<GriddedRecipe> Recipes { get; set; } = new List<GriddedRecipe>();
-        
+
         // 缓存结构 - 按工作台类型分组
         private Dictionary<int, List<GriddedRecipe>> _recipesByTileId;
         

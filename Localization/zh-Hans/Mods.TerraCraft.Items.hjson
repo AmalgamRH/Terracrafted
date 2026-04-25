@@ -92,3 +92,23 @@ TitaniumBlock: {
 	DisplayName: 钛金块
 	Tooltip: ""
 }
+
+MythrilWorkBench: {
+	DisplayName: 秘银工作台
+	Tooltip: ""
+}
+
+OrichalcumWorkBench: {
+	DisplayName: 山铜工作台
+	Tooltip: ""
+}
+
+CrimtaneWorkBench: {
+	DisplayName: 猩红工作台
+	Tooltip: ""
+}
+
+DemoniteWorkBench: {
+	DisplayName: 魔矿工作台
+	Tooltip: ""
+}

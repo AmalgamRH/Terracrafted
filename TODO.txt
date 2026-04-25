@@ -1,3 +1,16 @@
-一个猩红/腐化的升级工作台
-一个秘银级别的工作台
-Icon以及mini-icon
+贴图：
+√ Item+Tile：一个猩红/腐化的升级工作台
+√ Item+Tile：一个秘银/山铜级别的工作台
+UI：按钮“打开合成界面”
+UI：按钮“打开熔炼界面”
+Icon：Icon以及mini-icon
+
+
+程序：
+√ 合成中加入一个ConditionID/ModCondition？
+合成中加入一个重复配方功能，当出现多个满足的配方时，合成台出现箭头，可以选择配方结果
+√ 合成模板中支持RecipeGroup
+
+重构预览UI
+加入熔炼预览UI
+多人模式支持

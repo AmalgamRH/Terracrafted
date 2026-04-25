@@ -1,0 +1,28 @@
+{
+  "Recipes": [
+    {
+        "Id": "test",
+        "Shaped": false,
+        "RequiredTiles": [],
+        "Ingredients": [
+            {"ItemId": "Amber", "Amount": 1}
+        ],
+        "Conditions": ["InGraveyard"],
+        "Outputs": [
+            {"ItemId": "AmberStoneBlock", "Amount": 1}
+        ]
+    },
+    {
+        "Id": "test2",
+        "Shaped": false,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Ingredients": [
+            {"ItemId": "Emerald", "Amount": 1}
+        ],
+        "Conditions": ["InGraveyard"],
+        "Outputs": [
+            {"ItemId": "EmeraldStoneBlock", "Amount": 1}
+        ]
+    }
+  ]
+}

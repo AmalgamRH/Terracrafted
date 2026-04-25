@@ -18,4 +18,7 @@ Tooltips: {
 	HeavyWorkbench: 用于制作更高级的配方，拥有工作台的全部配方
 }
 
-UI.CraftStation: 需要制作站：
+UI: {
+	CraftStation: 需要制作站：
+	// CraftConditions: "Conditions: "
+}

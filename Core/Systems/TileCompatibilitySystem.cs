@@ -6,6 +6,10 @@ using Terraria.ModLoader;
 
 namespace TerraCraft.Core.Systems
 {
+    /// <summary>
+    /// 合成站兼容处理，仅处理原版的兼容
+    /// 模组内物块自动读取AdjTiles，无需手动注册
+    /// </summary>
     public class TileCompatibilitySystem : ModSystem
     {
         // 正向映射：子tile -> 父tile集合（用于判断兼容性）
@@ -171,7 +175,7 @@ namespace TerraCraft.Core.Systems
 
         private void LogCompatibilityInfo()
         {
-            Mod.Logger.Debug($"[TileCompatibility] 已建立 {ParentToChildren.Count} 个父关系，{ChildToParents.Count} 个子关系");
+            Mod.Logger.Debug($"[TileCompatibility] Established {ParentToChildren.Count} parent-child mappings. Parents: {ParentToChildren.Count}, Children: {ChildToParents.Count}");
         }
     }
 }

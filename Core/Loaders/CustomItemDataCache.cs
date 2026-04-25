@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TerraCraft.Core.DataStructures.GridCrafting;
 using TerraCraft.Core.DataStructures.Smelting;
+using Terraria.ID;
 
 namespace TerraCraft.Core.VanillaExt
 {
@@ -52,7 +53,7 @@ namespace TerraCraft.Core.VanillaExt
         }
         public static void UnloadFuelItem()
         {
-            MaterialItemIds.Clear();
+            FuelItemIds.Clear();
         }
     }
 }

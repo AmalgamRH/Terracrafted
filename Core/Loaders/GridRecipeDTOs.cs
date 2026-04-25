@@ -91,6 +91,7 @@ namespace TerraCraft.Core.Loaders
         public List<IngredientDTO> Ingredients { get; set; }     // 保留用于无序配方
         public List<OutputDTO> Outputs { get; set; }
         public List<ReplacementDTO> Replacements { get; set; } = new List<ReplacementDTO>();
+        public List<string> Conditions { get; set; }
     }
 
     internal class TemplateDTO
@@ -102,6 +103,7 @@ namespace TerraCraft.Core.Loaders
         public List<IngredientDTO> Ingredients { get; set; }
         public List<OutputDTO> Outputs { get; set; }
         public List<ReplacementDTO> Replacements { get; set; } = new List<ReplacementDTO>();
+        public List<string> Conditions { get; set; }
     }
 
     // 旧格式模板组DTO（向后兼容）

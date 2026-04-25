@@ -92,3 +92,23 @@ TitaniumBlock: {
 	DisplayName: Titanium Block
 	Tooltip: ""
 }
+
+MythrilWorkBench: {
+	DisplayName: Mythril Work Bench
+	Tooltip: ""
+}
+
+OrichalcumWorkBench: {
+	DisplayName: Orichalcum Work Bench
+	Tooltip: ""
+}
+
+CrimtaneWorkBench: {
+	DisplayName: Crimtane Work Bench
+	Tooltip: ""
+}
+
+DemoniteWorkBench: {
+	DisplayName: Demonite Work Bench
+	Tooltip: ""
+}

@@ -49,6 +49,16 @@ namespace TerraCraft
         }
 
         /// <summary>
+        /// 获取本地化文本，文本键示例：Act1.Misc.GatesEnter
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static LocalizedText GetOriginLocalizedText(string key)
+        {
+            return Language.GetText(Instance.GetLocalizationKey(key));
+        }
+
+        /// <summary>
         /// 获取Asset<Texture2D>资源。path示例：Threshold/Assets/Blank
         /// </summary>
         /// <param name="path"></param>

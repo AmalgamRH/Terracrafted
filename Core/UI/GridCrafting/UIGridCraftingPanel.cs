@@ -32,18 +32,32 @@ namespace TerraCraft.Core.UI.GridCrafting
         private Player Player => Main.LocalPlayer;
 
         private GridCraftingMatcher _currentMatcher;
-        private GriddedRecipe? _currentRecipe;
-        private Dictionary<int, int> _currentConsumptions;
-        private List<GridCraftingMatcher.ReplacementAction> _currentReplacements;
+        private List<(GriddedRecipe Recipe, Dictionary<int, int> Consumptions, List<GridCraftingMatcher.ReplacementAction> Replacements)> _allMatches;
+        private int _currentMatchIndex;
+        private string _previousRecipeId;
 
-        // Êä³ö²Û½»»¥
+        private GriddedRecipe? _currentRecipe => _allMatches != null && _allMatches.Count > 0 && _currentMatchIndex < _allMatches.Count ? _allMatches[_currentMatchIndex].Recipe : null;
+        private Dictionary<int, int> _currentConsumptions => _allMatches != null && _allMatches.Count > 0 && _currentMatchIndex < _allMatches.Count ? _allMatches[_currentMatchIndex].Consumptions : null;
+        private List<GridCraftingMatcher.ReplacementAction> _currentReplacements => _allMatches != null && _allMatches.Count > 0 && _currentMatchIndex < _allMatches.Count ? _allMatches[_currentMatchIndex].Replacements : null;
+
+        // å¯¼èˆªç®­å¤´
+        private UIImageNeo _leftArrow;
+        private UIImageNeo _rightArrow;
+
+        // åŠ¨æ€é¢æ¿å°ºå¯¸
+        private float _originalPanelWidth;
+        private float _originalPanelHeight;
+        private float _expandedPanelWidth;
+        private float _expandedPanelHeight;
+
+        // é¼ æ ‡äº¤äº’
         private bool _wasMouseLeftPressed;
         private bool _wasMouseRightPressed;
         private bool _wasMouseOverOutputLastFrame;
         private int _craftRepeatTimer;
         private const int CraftRepeatDelay = 30;
 
-        // ÊäÈë²Û½»»¥´¦ÀíÆ÷£¨ÒÑ·ÖÀë£©
+        // è¾“å…¥æ§½äº¤äº’å¤„ç†å™¨ï¼ˆä¸Žé¢„è§ˆåˆ†ç¦»ï¼‰
         private CustomItemSlotInputHandler _inputHandler;
 
         private Item[] _lastGridItems;
@@ -56,7 +70,6 @@ namespace TerraCraft.Core.UI.GridCrafting
             (GridWidth, GridHeight) = CraftingStationSize.GetGridSize(tileId);
             RecreateSlots();
 
-            // ³õÊ¼»¯½»»¥´¦ÀíÆ÷£¬´«Èë»Øµ÷ RefreshMatching
             _inputHandler = new CustomItemSlotInputHandler(inputSlots, RefreshMatching);
         }
 
@@ -64,16 +77,25 @@ namespace TerraCraft.Core.UI.GridCrafting
         {
             SetPadding(0);
 
+            _previousRecipeId = null;
+            _allMatches = null;
+            _currentMatchIndex = 0;
+
             foreach (var slot in inputSlots)
                 RemoveChild(slot);
             if (outputSlot != null)
                 RemoveChild(outputSlot);
+            if (_leftArrow != null)
+                RemoveChild(_leftArrow);
+            if (_rightArrow != null)
+                RemoveChild(_rightArrow);
             inputSlots.Clear();
 
             const float spacing = 8f;
             const float padding = 16;
             const float outputSpacing = 48f;
             const float iconSpacing = 16f;
+            const float navSpacing = 4f;
 
             Vector2 slotSize = new Vector2(44.2f);
             float actualSpacing = spacing;
@@ -122,7 +144,78 @@ namespace TerraCraft.Core.UI.GridCrafting
             arrow.Top.Set(arrowTop, 0f);
             Append(arrow);
 
-            if (ItemIcon > ItemID.None && TextureAssets.Item[ItemIcon] != null)
+            var arrowSmallTex = TerraCraft.GetTexture("TerraCraft/Assets/UI/GridCrafting/ArrowSmall");
+            var arrowSmallHoveringTex = TerraCraft.GetTexture("TerraCraft/Assets/UI/GridCrafting/ArrowSmall_Glow");
+            _leftArrow = new UIImageNeo(arrowSmallTex)
+            {
+                NormalizedOrigin = new Vector2(0.5f),
+                IgnoresMouseInteraction = false,
+                Rotation = MathHelper.PiOver2,
+                AllowResizingDimensions = false
+            };
+            _leftArrow.OnLeftClick += (evt, elem) => NavigateMatch(-1);
+            _leftArrow.SetSize(arrowSmallTex.Width, arrowSmallTex.Height);
+            var leftArrowGlow = new UIImageNeo(arrowSmallHoveringTex)
+            {
+                NormalizedOrigin = new Vector2(0.5f),
+                IgnoresMouseInteraction = true,
+                Color = Color.Transparent,
+                Rotation = MathHelper.PiOver2,
+                AllowResizingDimensions = false
+            };
+            leftArrowGlow.SetSize(arrowSmallTex.Width, arrowSmallTex.Height);
+            _leftArrow.OnMouseOver += (evt, elem) =>
+            {
+                leftArrowGlow.Color = Color.White * 0.9f; 
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            };
+            _leftArrow.OnMouseOut += (evt, elem) => leftArrowGlow.Color = Color.Transparent;
+            _leftArrow.Append(leftArrowGlow);
+            Append(_leftArrow);
+
+            _rightArrow = new UIImageNeo(arrowSmallTex)
+            {
+                NormalizedOrigin = new Vector2(0.5f),
+                IgnoresMouseInteraction = false,
+                Rotation = -MathHelper.PiOver2,
+                AllowResizingDimensions = false
+            };
+            _rightArrow.OnLeftClick += (evt, elem) => NavigateMatch(1);
+            _rightArrow.SetSize(arrowSmallTex.Width, arrowSmallTex.Height);
+
+
+            var rightArrowGlow = new UIImageNeo(arrowSmallHoveringTex)
+            {
+                NormalizedOrigin = new Vector2(0.5f),
+                IgnoresMouseInteraction = true,
+                Color = Color.Transparent,
+                Rotation = -MathHelper.PiOver2,
+                AllowResizingDimensions = false
+            };
+            rightArrowGlow.SetSize(arrowSmallTex.Width, arrowSmallTex.Height);
+            _rightArrow.OnMouseOver += (evt, elem) =>
+            {
+                rightArrowGlow.Color = Color.White * 0.9f;
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            };
+
+
+            _rightArrow.OnMouseOut += (evt, elem) => rightArrowGlow.Color = Color.Transparent;
+            _rightArrow.Append(rightArrowGlow);
+            Append(_rightArrow);
+
+            float navArrowW = _leftArrow.Width.Pixels;
+            float navArrowH = _leftArrow.Height.Pixels;
+
+            float iconTop = outputTop + outputSlot.Height.Pixels + iconSpacing;
+
+            _leftArrow.Left.Set(outputLeft - navArrowW - navSpacing, 0f);
+            _leftArrow.Top.Set(iconTop, 0f);
+
+            _rightArrow.Left.Set(outputLeft + outputSlot.Width.Pixels + navSpacing, 0f);
+            _rightArrow.Top.Set(iconTop, 0f);
+
+            if (TextureAssets.Item[ItemIcon] != null)
             {
                 var iconTexture = TextureAssets.Item[ItemIcon];
                 var craftstationIcon = new UIImageNeo(iconTexture)
@@ -131,25 +224,100 @@ namespace TerraCraft.Core.UI.GridCrafting
                     Color = Color.White * 0.8f
                 };
                 float iconLeft = outputLeft + Math.Abs(iconTexture.Width() - outputSlot.Width.Pixels) / 2;
-                float iconTop = outputTop + outputSlot.Height.Pixels + iconSpacing;
                 craftstationIcon.SetSize(slotSize);
                 craftstationIcon.Left.Set(iconLeft, 0f);
                 craftstationIcon.Top.Set(iconTop, 0f);
                 Append(craftstationIcon);
             }
 
-            float totalHeight = padding + gridActualHeight + padding;
-            float totalWidth = outputLeft + outputSlot.Width.Pixels + padding;
-            this.SetSize(totalWidth, totalHeight);
+            _originalPanelWidth = outputLeft + outputSlot.Width.Pixels + padding + 4f;
+            _originalPanelHeight = padding + gridActualHeight + padding + 4f;
+
+            float navRightEdge = outputLeft + outputSlot.Width.Pixels + navSpacing + navArrowW + padding + 4f;
+            float contentBottom = _originalPanelHeight;
+            float iconHeight = ItemIcon > ItemID.None ? slotSize.Y : 0f;
+            float iconArrowBottom = iconTop + Math.Max(iconHeight, navArrowH) + padding + 4f;
+            if (iconArrowBottom > contentBottom)
+                contentBottom = iconArrowBottom;
+
+            _expandedPanelWidth = Math.Max(_originalPanelWidth, navRightEdge);
+            _expandedPanelHeight = contentBottom;
+
+            this.SetSize(_originalPanelWidth, _originalPanelHeight);
+
+            UpdateArrowVisibility();
+        }
+
+        private void NavigateMatch(int direction)
+        {
+            if (_allMatches == null || _allMatches.Count <= 1) return;
+
+            _currentMatchIndex += direction;
+            if (_currentMatchIndex < 0) _currentMatchIndex = _allMatches.Count - 1;
+            if (_currentMatchIndex >= _allMatches.Count) _currentMatchIndex = 0;
+
+            UpdateOutputFromMatch();
+            _previousRecipeId = _allMatches[_currentMatchIndex].Recipe.Id;
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        private void UpdateOutputFromMatch()
+        {
+            if (_allMatches != null && _allMatches.Count > 0 && _currentMatchIndex < _allMatches.Count)
+            {
+                var output = _allMatches[_currentMatchIndex].Recipe.Outputs[0];
+                outputSlot.Item.SetDefaults(output.ItemType);
+                outputSlot.Item.stack = output.Amount;
+            }
+            else
+            {
+                outputSlot.Item.TurnToAir();
+            }
+        }
+
+        private void UpdateArrowVisibility()
+        {
+            bool showArrows = _allMatches != null && _allMatches.Count > 1;
+            if (_leftArrow != null)
+            {
+                if (showArrows)
+                {
+                    _leftArrow.Color = Color.White * 0.9f;
+                    _leftArrow.IgnoresMouseInteraction = false;
+                }
+                else
+                {
+                    _leftArrow.Color = Color.Transparent;
+                    _leftArrow.IgnoresMouseInteraction = true;
+                }
+            }
+            if (_rightArrow != null)
+            {
+                if (showArrows)
+                {
+                    _rightArrow.Color = Color.White * 0.9f;
+                    _rightArrow.IgnoresMouseInteraction = false;
+                }
+                else
+                {
+                    _rightArrow.Color = Color.Transparent;
+                    _rightArrow.IgnoresMouseInteraction = true;
+                }
+            }
+
+            if (showArrows)
+                this.SetSize(_expandedPanelWidth, _expandedPanelHeight);
+            else
+                this.SetSize(_originalPanelWidth, _originalPanelHeight);
         }
 
         public override void Update(GameTime gameTime)
         {
-            // ÏÈÈÃ InputHandler ´¦ÀíÊäÈë²Û½»»¥²¢×èÖ¹Ô­°æ¸ÉÔ¤
+            // ï¿½ï¿½ï¿½ï¿½ InputHandler ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Ô­ï¿½ï¿½ï¿½Ô¤
             _inputHandler?.Update();
-            // ÔÙ´¦ÀíÊä³ö²Û
+            // ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             HandleOutputSlotInteraction();
-            // ×îºóµ÷ base£¨Ô­°æ UI ÏµÍ³´ËÊ± mouseLeftRelease ÒÑ±»ÎÒÃÇ´¦Àí¹ý£©
+            // ï¿½ï¿½ï¿½ï¿½ baseï¿½ï¿½Ô­ï¿½ï¿½ UI ÏµÍ³ï¿½ï¿½Ê± mouseLeftRelease ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             base.Update(gameTime);
 
             if (GridWidth == 0) return;
@@ -185,29 +353,62 @@ namespace TerraCraft.Core.UI.GridCrafting
         private void RefreshMatching()
         {
             Item[] gridItems = inputSlots.Select(s => s.Item).ToArray();
-            if (!HasGridChanged(gridItems)) return;
+
+            bool hasDynamicCondition = _allMatches != null && _allMatches.Count > 0 &&
+                               _allMatches.Any(m => m.Recipe.Conditions != null &&
+                                                    m.Recipe.Conditions.Count > 0);
+
+            if (!hasDynamicCondition && !HasGridChanged(gridItems)) return;
+
+            string prevRecipeId = _previousRecipeId;
 
             _currentMatcher = new GridCraftingMatcher(TileId, GridWidth, GridHeight, gridItems);
-            var match = _currentMatcher.Match();
-            _currentRecipe = match.Recipe;
-            _currentConsumptions = match.Consumptions;
-            _currentReplacements = match.Replacements;
+            _allMatches = _currentMatcher.MatchAll();
+            _allMatches = _allMatches.Where(m => AreConditionsMet(m.Recipe)).ToList();
 
-            if (_currentRecipe.HasValue && _currentRecipe.Value.Outputs?.Count > 0)
+            if (prevRecipeId != null)
             {
-                var output = _currentRecipe.Value.Outputs[0];
+                int foundIndex = _allMatches.FindIndex(m => m.Recipe.Id == prevRecipeId);
+                _currentMatchIndex = foundIndex >= 0 ? foundIndex : 0;
+            }
+            else
+            {
+                _currentMatchIndex = 0;
+            }
+
+            if (_allMatches.Count > 0)
+            {
+                var output = _allMatches[_currentMatchIndex].Recipe.Outputs[0];
                 outputSlot.Item.SetDefaults(output.ItemType);
                 outputSlot.Item.stack = output.Amount;
+                _previousRecipeId = _allMatches[_currentMatchIndex].Recipe.Id;
             }
             else
             {
                 outputSlot.Item.TurnToAir();
+                _previousRecipeId = null;
             }
+
+            UpdateArrowVisibility();
 
             _lastGridItems = gridItems.Select(item => item?.Clone()).ToArray();
         }
 
-        // ================= Êä³ö²Û½»»¥ =================
+        private bool AreConditionsMet(GriddedRecipe recipe)
+        {
+            if (recipe.Conditions == null || recipe.Conditions.Count == 0)
+                return true;
+
+            foreach (string condStr in recipe.Conditions)
+            {
+                Condition condition = ConditionResolver.Parse(condStr);
+                if (condition == null || !condition.Predicate())
+                    return false;
+            }
+            return true;
+        }
+
+        // ================= ï¿½ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½ =================
         private void HandleOutputSlotInteraction()
         {
             bool leftDown = Main.mouseLeft;
@@ -219,7 +420,7 @@ namespace TerraCraft.Core.UI.GridCrafting
             {
                 _craftRepeatTimer = 0;
                 _wasMouseOverOutputLastFrame = false;
-                _wasMouseLeftPressed = leftDown; // ¹Ø¼ü£ºÀë¿ªÊ±Ò²Òª¸üÐÂ
+                _wasMouseLeftPressed = leftDown; // ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ë¿ªÊ±Ò²Òªï¿½ï¿½ï¿½ï¿½
                 return;
             }
 
@@ -261,7 +462,7 @@ namespace TerraCraft.Core.UI.GridCrafting
                 _craftRepeatTimer = 0;
             }
 
-            _wasMouseLeftPressed = leftDown; // Í³Ò»ÔÚÕâÀï¸üÐÂ
+            _wasMouseLeftPressed = leftDown; // Í³Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             _wasMouseOverOutputLastFrame = true;
         }
 
@@ -276,7 +477,7 @@ namespace TerraCraft.Core.UI.GridCrafting
             RefreshMatching();
         }
 
-        // ================= ºÏ³ÉºËÐÄÂß¼­ =================
+        // ================= ï¿½Ï³Éºï¿½ï¿½ï¿½ï¿½ß¼ï¿½ =================
         private bool TryCraftAndGiveToMouse(int takeAmount, bool noSound = false)
         {
             if (!_currentRecipe.HasValue || _currentConsumptions == null) return false;
@@ -329,7 +530,7 @@ namespace TerraCraft.Core.UI.GridCrafting
 
         private void PerformConsumption()
         {
-            // ÏÈÖ´ÐÐÏûºÄ£¨¼õÉÙ¶Ñµþ£¬¹éÁãÔòÇå¿Õ£©
+            // ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ù¶Ñµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ£ï¿½
             foreach (var kv in _currentConsumptions)
             {
                 Item slotItem = inputSlots[kv.Key].Item;
@@ -338,7 +539,7 @@ namespace TerraCraft.Core.UI.GridCrafting
                     slotItem.TurnToAir();
             }
 
-            // ´¦ÀíÌæ»»Âß¼­
+            // ï¿½ï¿½ï¿½ï¿½ï¿½æ»»ï¿½ß¼ï¿½
             if (_currentReplacements != null)
             {
                 foreach (var rep in _currentReplacements)
@@ -348,7 +549,7 @@ namespace TerraCraft.Core.UI.GridCrafting
 
                     if (slotIsEmpty)
                     {
-                        // ²ÛÎ»Îª¿Õ£¬Ó¦ÓÃÌæ»»
+                        // ï¿½ï¿½Î»Îªï¿½Õ£ï¿½Ó¦ï¿½ï¿½ï¿½æ»»
                         if (rep.ReplaceWithItem.HasValue)
                         {
                             inputSlots[rep.SlotIndex].Item.SetDefaults(rep.ReplaceWithItem.Value);

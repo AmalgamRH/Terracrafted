@@ -308,6 +308,15 @@ namespace TerraCraft.Core.Loaders
                 }
             }
 
+            // 替换Condition
+            if (template.Conditions != null)
+            {
+                dto.Conditions = new List<string>();
+                foreach (var cond in template.Conditions)
+                {
+                    dto.Conditions.Add(ReplacePlaceholders(cond, replacements));
+                }
+            }
 
             // 复制Pattern
             if (template.Pattern != null && template.Pattern.Any())
@@ -323,12 +332,37 @@ namespace TerraCraft.Core.Loaders
                             newRow.Add(null);
                             continue;
                         }
+
+                        // 先进行占位符替换
                         var newCell = new PatternCellDTO
                         {
                             ItemId = ReplacePlaceholders(cell.ItemId, replacements),
                             RecipeGroup = ReplacePlaceholders(cell.RecipeGroup, replacements),
                             Amount = cell.Amount
                         };
+
+                        // 智能解析：如果前面带有RecipeGroup前缀则解析为配方组
+                        if (string.IsNullOrEmpty(newCell.RecipeGroup) && !string.IsNullOrEmpty(newCell.ItemId))
+                        {
+                            string raw = newCell.ItemId;
+                            if (raw.StartsWith("RecipeGroup:", StringComparison.OrdinalIgnoreCase))
+                            {
+                                newCell.RecipeGroup = raw.Substring("RecipeGroup:".Length);
+                                newCell.ItemId = null;
+                            }
+                            else
+                            {
+                                //否则，尝试解析为物品ID
+                                int id = ItemIDResolver.ParseItemType(raw);
+                                if (id == 0)
+                                {
+                                    // 解析失败，当作RecipeGroup
+                                    newCell.RecipeGroup = raw;
+                                    newCell.ItemId = null;
+                                }
+                                // 解析成功，保留ItemId
+                            }
+                        }
                         newRow.Add(newCell);
                     }
                     dto.Pattern.Add(newRow);
@@ -462,6 +496,12 @@ namespace TerraCraft.Core.Loaders
                     gridHeight = tempRecipe.GridHeight;
                 }
 
+                List<string> conditionStrings = null;
+                if (dto.Conditions != null && dto.Conditions.Count > 0)
+                {
+                    conditionStrings = new List<string>(dto.Conditions);
+                }
+
                 var recipe = new GriddedRecipe
                 {
                     Id = dto.Id,
@@ -471,7 +511,8 @@ namespace TerraCraft.Core.Loaders
                     RequiredTileIds = tileIds,
                     Ingredients = ingredients,
                     Outputs = outputs,
-                    Replacements = replacements
+                    Replacements = replacements,
+                    Conditions = conditionStrings
                 };
 
                 string tileInfo = tileIds == null ? "None" : string.Join(", ", tileIds.Select(id => $"{id}"));

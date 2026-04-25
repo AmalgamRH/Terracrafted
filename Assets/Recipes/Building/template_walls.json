@@ -1,0 +1,36 @@
+﻿{
+    "RecipeGroups": [
+        {
+            "Id": "walls_template_group",
+            "MaterialSource": "wall_materials",
+            "Template": {
+                "Id": "{Name}_wall",
+                "Shaped": true,
+                "RequiredTiles": [],
+                "Pattern": [
+                    ["{MatId}","{MatId}"],
+                    ["{MatId}","{MatId}"]
+                ],
+                "Outputs": [
+                    {"ItemId": "{WallId}", "Amount": 16}
+                ]
+            },
+            "PlaceholderMappings": {
+                "Name": "Name",
+                "MatId": "MatId",
+                "WallId": "WallId"
+            }
+        }
+    ],
+    "MaterialDefinitions": [
+        {
+            "Id": "wall_materials",
+            "Description": "wall_materials",
+            "Materials": [
+                { "Name": "dungeon1", "MatId": "GreenBrick", "WallId": "GreenBrickWall" },
+                { "Name": "dungeon2", "MatId": "GreenBrick", "WallId": "GreenSlabWall" },
+                { "Name": "dungeon3", "MatId": "GreenBrick", "WallId": "GreenTiledWall" }
+            ]
+        }
+    ]
+}

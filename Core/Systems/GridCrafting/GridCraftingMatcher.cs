@@ -71,6 +71,37 @@ namespace TerraCraft.Core.Systems.GridCrafting
             return _lastMatchResult;
         }
 
+        public List<(GriddedRecipe Recipe, Dictionary<int, int> Consumptions, List<ReplacementAction> Replacements)> MatchAll()
+        {
+            var results = new List<(GriddedRecipe Recipe, Dictionary<int, int> Consumptions, List<ReplacementAction> Replacements)>();
+            var seenIds = new HashSet<string>();
+
+            var tileRecipes = GridRecipeLoader.RecipeDB.GetRecipesForTile(_tileId);
+            if (tileRecipes.Count == 0)
+                return results;
+
+            foreach (var recipe in tileRecipes.Where(r => !r.Shaped))
+            {
+                var result = MatchShapeless(recipe);
+                if (result != null && seenIds.Add(recipe.Id))
+                    results.Add(result.Value);
+            }
+
+            var shapedRecipes = tileRecipes
+                .Where(r => r.Shaped && r.GridWidth <= _gridWidth && r.GridHeight <= _gridHeight)
+                .OrderByDescending(r => r.GridWidth * r.GridHeight)
+                .ToList();
+
+            foreach (var recipe in shapedRecipes)
+            {
+                var result = MatchShaped(recipe);
+                if (result != null && seenIds.Add(recipe.Id))
+                    results.Add(result.Value);
+            }
+
+            return results;
+        }
+
         private (GriddedRecipe? Recipe, Dictionary<int, int> Consumptions, List<ReplacementAction> Replacements) MatchWithCache()
         {
             // 获取该工作台的配方列表（使用缓存）
