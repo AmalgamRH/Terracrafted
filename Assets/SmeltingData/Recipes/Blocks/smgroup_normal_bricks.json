@@ -1,0 +1,38 @@
+﻿{
+    "SmeltingGroups": [
+        {
+            "Id": "template_normal_bricks",
+            "MaterialSource": "all_brick_materials",
+            "Template": {
+                "Id": "{Name}_brick",
+                "RequiredTiles": [],
+                "Label": "",
+                "Ingredients": [{"ItemId":"{MatId}", "Amount":2}],
+                "Outputs": [{"ItemId":"{BrickId}", "Amount":1}],
+                "BaseSmeltTime": 480
+            },
+            "PlaceholderMappings": {
+                "Name": "Name",
+                "MatId": "MatId",
+                "BrickId": "BrickId"
+            }
+        }
+    ],
+    "MaterialDefinitions": [
+        {
+            "Id": "all_brick_materials",
+            "Description": "all_brick_materials",
+            "Materials": [
+                {"Name": "gray", "MatId": "StoneBlock", "BrickId": "GrayBrick"},
+                {"Name": "red", "MatId": "ClayBlock", "BrickId": "RedBrick"},
+                {"Name": "ebonstone", "MatId": "EbonstoneBlock", "BrickId": "EbonstoneBrick"},
+                {"Name": "crimstone", "MatId": "CrimstoneBlock", "BrickId": "CrimstoneBrick"},
+                {"Name": "iridescent", "MatId": "AshBlock", "BrickId": "IridescentBrick"},
+                {"Name": "mudstone", "MatId": "MudBlock", "BrickId": "MudstoneBlock"},
+                {"Name": "pearlstone", "MatId": "PearlstoneBlock", "BrickId": "PearlstoneBrick"},
+                {"Name": "sandstone", "MatId": "HardenedSand", "BrickId": "SandstoneBrick"},
+                {"Name": "smooth_sandstone", "MatId": "Sandstone", "BrickId": "SmoothSandstone"}
+            ]
+        }
+    ]
+}

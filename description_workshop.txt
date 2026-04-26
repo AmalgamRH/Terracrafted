@@ -1,4 +1,4 @@
-﻿[b]Terracrafted[/b]
+﻿[b]Terracrafted / 泰拉工艺[/b]
 [i]一款为《泰拉瑞亚》打造的Minecraft风格合成与玩法增强模组。[/i]
 
 [hr][/hr]
@@ -24,6 +24,9 @@
 [/list]
 
 [hr][/hr]
+
+*本模组支持从外部 JSON 文件加载自定义配方或修改已有配方。请查看模组配置目录（.../My Games/Terraria/tModLoader/TerraCraft/）。若对应文件夹为空，首次运行时会自动生成模板文件供参考。
+
 
 [b]📅 未来计划[/b]
 [list]

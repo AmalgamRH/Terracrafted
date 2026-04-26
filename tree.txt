@@ -1,42 +1,70 @@
-﻿TerraCraft/
+TerraCraft/
 ├── Assets/
 │   ├── DurabilityData/
 │   ├── Recipes/
 │   │   ├── Building/
-│   │   │   ├── template_furnitures.json
-│   │   │   ├── template_oreblocks.json
-│   │   │   ├── template_orebricks.json
-│   │   │   └── template_torches.json
+│   │   │   ├── Blocks/
+│   │   │   │   ├── recipe_boulders.json
+│   │   │   │   ├── recipe_clouds.json
+│   │   │   │   ├── recipe_glass.json
+│   │   │   │   ├── recipe_wire_blocks.json
+│   │   │   │   ├── template_gem_blocks.json
+│   │   │   │   ├── template_living_fires.json
+│   │   │   │   ├── template_ore_blocks.json
+│   │   │   │   └── template_ore_bricks.json
+│   │   │   ├── Furnitures/
+│   │   │   │   └── template_furniture_sets.json
+│   │   │   ├── Lighting/
+│   │   │   │   └── template_torches.json
+│   │   │   └── Walls/
+│   │   │       └── template_walls.json
 │   │   ├── CraftStations/
 │   │   │   ├── recipe_furnaces.json
+│   │   │   ├── recipe_misc_craftstations.json
 │   │   │   ├── recipe_sawmill.json
 │   │   │   ├── recipe_workbenches.json
 │   │   │   └── template_anvils.json
 │   │   ├── Equipments/
+│   │   │   ├── Lunar/
+│   │   │   │   └── recipe_lunar_weapons.json
 │   │   │   └── PreHardmode/
 │   │   │       ├── recipe_shovel.json
 │   │   │       ├── template_normal_bars.json
 │   │   │       └── template_woods.json
 │   │   └── Materials/
 │   │       └── PreHardmode/
-│   │           └── recipe_materials_1.json
+│   │           ├── recipe_materials_1.json
+│   │           └── recipe_materials_2.json
 │   ├── SmeltingData/
 │   │   ├── Fuels/
 │   │   │   └── fuels_1.json
 │   │   └── Recipes/
+│   │       ├── Blocks/
+│   │       │   ├── smelting_building_blocks.json
+│   │       │   └── smgroup_moss_bricks.json
 │   │       ├── smelting_materials.json
 │   │       ├── smelting_ore.json
-│   │       ├── template_coal.json
-│   │       └── template_example.json
+│   │       ├── smgroup_coal.json
+│   │       └── smgroup_example.not_json
+│   ├── Templates/
+│   │   ├── CraftingBlacklist.json.template
+│   │   ├── CraftingRecipes.json.template
+│   │   ├── SmeltingBlacklist.json.template
+│   │   └── SmeltingRecipes.json.template
 │   ├── Tiles/
 │   │   ├── Tiles_17_Ext.png
 │   │   ├── Tiles_302_Ext.png
 │   │   └── Tiles_77_Ext.png
 │   └── UI/
+│       ├── ButtonGridCrafting.png
+│       ├── ButtonSmelting.png
 │       ├── Durability/
 │       │   ├── DurabilityBar1.png
 │       │   ├── DurabilityBar2.png
 │       │   └── DurabilityBar3.png
+│       ├── GridCrafting/
+│       │   ├── ArrowSmall.png
+│       │   └── ArrowSmall_Glow.png
 │       └── Smelting/
 │           ├── SmeltingArrow.png
 │           ├── SmeltingFire.png
@@ -49,6 +77,15 @@
 │   │   │   ├── WoodenStick.cs
 │   │   │   └── WoodenStick.png
 │   │   ├── Placeables/
+│   │   │   ├── Furnitures/
+│   │   │   │   ├── CrimtaneWorkBench.cs
+│   │   │   │   ├── CrimtaneWorkBench.png
+│   │   │   │   ├── DemoniteWorkBench.cs
+│   │   │   │   ├── DemoniteWorkBench.png
+│   │   │   │   ├── MythrilWorkBench.cs
+│   │   │   │   ├── MythrilWorkBench.png
+│   │   │   │   ├── OrichalcumWorkBench.cs
+│   │   │   │   └── OrichalcumWorkBench.png
 │   │   │   └── OreBlocks/
 │   │   │       ├── AdamantiteBlock.cs
 │   │   │       ├── AdamantiteBlock.png
@@ -87,6 +124,11 @@
 │   │       ├── WoodPickaxe.cs
 │   │       └── WoodPickaxe.png
 │   └── Tiles/
+│       ├── Furnitures/
+│       │   ├── EvilWorkBenches.cs
+│       │   ├── EvilWorkBenches.png
+│       │   ├── MythrilWorkBenches.cs
+│       │   └── MythrilWorkBenches.png
 │       └── OreBlocks/
 │           ├── AdamantiteBlockTile.cs
 │           ├── AdamantiteBlockTile.png
@@ -136,6 +178,7 @@
 │   │   ├── GridRecipeLoader.cs
 │   │   ├── IOrderedLoadable.cs
 │   │   ├── OrderedLoaderManager.cs
+│   │   ├── RecipeBlacklistDTO.cs
 │   │   ├── SmeltingDTOs.cs
 │   │   └── SmeltingLoader.cs
 │   ├── Network/
@@ -162,6 +205,7 @@
 │   │   │   │   ├── UICraftPreviewPanel.cs
 │   │   │   │   ├── UICraftPreviewSlot.cs
 │   │   │   │   └── UICraftPreviewerState.cs
+│   │   │   ├── UIButtonNeo.cs
 │   │   │   ├── UIGridCraftingPanel.cs
 │   │   │   └── UIGridCraftingState.cs
 │   │   ├── Smelting/
@@ -175,6 +219,7 @@
 │   │   └── WorkstationUIRegister.cs
 │   ├── Utils/
 │   │   ├── ColorHelper.cs
+│   │   ├── ConditionResolver.cs
 │   │   ├── ItemIDResolver.cs
 │   │   ├── RecipeGroupResolver.cs
 │   │   ├── SmeltingHelper.cs
@@ -197,6 +242,7 @@
 │   └── launchSettings.json
 ├── README.md
 ├── README_zh-Hans.md
+├── TODO.txt
 ├── TerraCraft.cs
 ├── TerraCraft.csproj
 ├── TerraCraft.sln

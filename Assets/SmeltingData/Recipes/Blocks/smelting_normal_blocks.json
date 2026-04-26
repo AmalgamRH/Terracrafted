@@ -1,0 +1,23 @@
+﻿{
+    "Smelting": [
+        {
+            "Id": "crispy_honey_block",
+            "RequiredTiles": [],
+            "Label": "",
+            "Ingredients": [{"ItemId":"HoneyBlock", "Amount":1}],
+            "Outputs": [{ "ItemId": "CrispyHoneyBlock", "Amount": 1 }],
+            "BaseSmeltTime": 480
+        },
+        {
+            "Id": "gray_stucco",
+            "RequiredTiles": [],
+            "Label": "",
+            "Ingredients": [
+                {"ItemId":"SiltBlock", "Amount":1},
+                {"ItemId": "StoneBlock", "Amount": 10}
+            ],
+            "Outputs": [{ "ItemId": "GrayStucco", "Amount": 10 }],
+            "BaseSmeltTime": 480
+        }
+    ]
+}

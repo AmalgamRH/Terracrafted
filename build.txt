@@ -1,4 +1,4 @@
 displayName = Terracrafted (Beta)
 author = Amalgam
-version = 0.1.5
+version = 0.2
 buildIgnore = *.csproj, *.sln, *.suo, *.user, *.des, *.md, *.gitignore, obj\*, bin\*, .git\*, .vs\*, tree.py

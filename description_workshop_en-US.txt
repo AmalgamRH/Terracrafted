@@ -19,6 +19,8 @@ Smelting system is now added. (Currently NOT tested in multiplayer mode!)
 
 [/list]
 
+*This mod supports loading custom recipes or modifying existing ones from external JSON files. Please check the mod's configuration directory (.../My Games/Terraria/tModLoader/TerraCraft/). Template files will be automatically generated when the folder is empty on first run.
+
 [b]📅 Future Plans[/b]
 [list]
 [*]Full multiplayer support

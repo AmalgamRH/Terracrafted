@@ -1,0 +1,169 @@
+﻿{
+  "Recipes": [
+    {
+        "Id": "blue_brick",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","CobaltOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "BlueBrick", "Amount": 1}
+        ]
+    },
+    {
+        "Id": "cracked_blue_brick",
+        "Shaped": false,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Ingredients": [{"ItemId": "BlueBrick", "Amount": 1}],
+        "Outputs": [
+            {"ItemId": "CrackedBlueBrick", "Amount": 2}
+        ]
+    },
+
+    {
+        "Id": "green_brick",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","MythrilOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "GreenBrick", "Amount": 1}
+        ]
+    },
+    {
+        "Id": "green_brick_2",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","TitaniumOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "GreenBrick", "Amount": 1}
+        ]
+    },
+    {
+        "Id": "cracked_green_brick",
+        "Shaped": false,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Ingredients": [{"ItemId": "GreenBrick", "Amount": 1}],
+        "Outputs": [
+            {"ItemId": "CrackedGreenBrick", "Amount": 2}
+        ]
+    },
+
+    {
+        "Id": "pink_brick",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","OrichalcumOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "PinkBrick", "Amount": 5}
+        ]
+    },
+    {
+        "Id": "pink_brick_2",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","PalladiumOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "PinkBrick", "Amount": 5}
+        ]
+    },
+    {
+        "Id": "pink_brick_3",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","AdamantiteOre","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "PinkBrick", "Amount": 5}
+        ]
+    },
+    {
+        "Id": "cracked_pink_brick",
+        "Shaped": false,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Ingredients": [{"ItemId": "PinkBrick", "Amount": 1}],
+        "Outputs": [
+            {"ItemId": "CrackedPinkBrick", "Amount": 2}
+        ]
+    },
+
+    {
+        "Id": "ice_brick",
+        "Shaped": true,
+        "RequiredTiles": ["WorkBenches"],
+        "Pattern": [
+            ["IceBlock","IceBlock"],
+            ["IceBlock","IceBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "IceBrick", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "snow_brick",
+        "Shaped": true,
+        "RequiredTiles": ["WorkBenches"],
+        "Pattern": [
+            ["SnowBlock","SnowBlock"],
+            ["SnowBlock","SnowBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "SnowBrick", "Amount": 2}
+        ]
+    },
+
+    {
+        "Id": "stone_accent_slab",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["StoneBlock","StoneBlock"],
+            ["StoneBlock","StoneBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "AccentSlab", "Amount": 4}
+        ]
+    },
+    {
+        "Id": "stone_slab",
+        "Shaped": true,
+        "RequiredTiles": ["HeavyWorkBench"],
+        "Conditions":["InGraveyard"],
+        "Pattern": [
+            ["StoneBlock","StoneBlock"],
+            ["StoneBlock","StoneBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "StoneSlab", "Amount": 4}
+        ]
+    }
+  ]
+}

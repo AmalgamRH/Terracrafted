@@ -1,0 +1,142 @@
+﻿{
+  "Recipes": [
+    {
+        "Id": "asphalt_block",
+        "Shaped": true,
+        "RequiredTiles": ["Blendomatic"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","Gel","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "AsphaltBlock", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "large_bamboo_block",
+        "Shaped": true,
+        "RequiredTiles": ["Sawmill"],
+        "Pattern": [
+            ["BambooBlock","BambooBlock"],
+            ["BambooBlock","BambooBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "LargeBambooBlock", "Amount": 4}
+        ]
+    },
+    {
+        "Id": "coralstone_block",
+        "Shaped": true,
+        "RequiredTiles": [],
+        "Conditions": ["NearWater"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","Coral","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "CoralstoneBlock", "Amount": 4}
+        ]
+    },
+    {
+        "Id": "crystal_block",
+        "Shaped": true,
+        "RequiredTiles": ["TerraCraft:MythrilWorkBenches"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","CrystalShard","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "CrystalBlock", "Amount": 4}
+        ]
+    },
+    {
+        "Id": "crystal_block",
+        "Shaped": true,
+        "RequiredTiles": ["TerraCraft:MythrilWorkBenches"],
+        "Pattern": [
+            ["","StoneBlock",""],
+            ["StoneBlock","CrystalShard","StoneBlock"],
+            ["","StoneBlock",""]
+        ],
+        "Outputs": [
+            {"ItemId": "CrystalBlock", "Amount": 4}
+        ]
+    },
+    {
+        "Id": "flesh_block",
+        "Shaped": true,
+        "RequiredTiles": ["MeatGrinder"],
+        "Pattern": [
+            ["CrimstoneBlock","CrimstoneBlock"],
+            ["CrimstoneBlock","CrimstoneBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "FleshBlock", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "lesian_block",
+        "Shaped": true,
+        "RequiredTiles": ["MeatGrinder"],
+        "Pattern": [
+            ["EbonstoneBlock","EbonstoneBlock"],
+            ["EbonstoneBlock","EbonstoneBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "LesionBlock", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "hardened_sand",
+        "Shaped": false,
+        "RequiredTiles": ["Solidifier"],
+        "Ingredients": [
+            {"ItemId": "SandBlock", "Amount": 1},
+            {"ItemId": "DirtBlock", "Amount": 1}
+        ],
+        "Outputs": [
+            {"ItemId": "HardenedSand", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "sand_stone",
+        "Shaped": false,
+        "RequiredTiles": ["Solidifier"],
+        "Ingredients": [
+            {"ItemId": "SandBlock", "Amount": 1},
+            {"ItemId": "StoneBlock", "Amount": 1}
+        ],
+        "Outputs": [
+            {"ItemId": "Sandstone", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "mud_block",
+        "Shaped": false,
+        "RequiredTiles": [],
+        "Conditions": ["NearWater"],
+        "Ingredients": [
+            {"ItemId": "DirtBlock", "Amount": 1}
+        ],
+        "Outputs": [
+            {"ItemId": "MudBlock", "Amount": 2}
+        ]
+    },
+    {
+        "Id": "sunplate_block",
+        "Shaped": true,
+        "RequiredTiles": ["SkyMill"],
+        "Pattern": [
+            ["StoneBlock","StoneBlock","StoneBlock"],
+            ["StoneBlock","FallenStar","StoneBlock"],
+            ["StoneBlock","StoneBlock","StoneBlock"]
+        ],
+        "Outputs": [
+            {"ItemId": "SunplateBlock", "Amount": 3}
+        ]
+    },
+  ]
+}
